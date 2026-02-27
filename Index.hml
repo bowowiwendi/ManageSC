@@ -1026,11 +1026,11 @@
     </div>
   </nav>
 
-  <!-- PIN Modal -->
+  <!-- PIN Modal (Login/Verify) -->
   <div id="pin-modal" class="pin-modal">
     <div class="pin-modal-content">
-      <h2>🔐 Keamanan</h2>
-      <p>Masukkan PIN 6 digit untuk melanjutkan</p>
+      <h2 id="pin-modal-title">🔐 Keamanan</h2>
+      <p id="pin-modal-subtitle">Masukkan PIN 6 digit untuk melanjutkan</p>
       <div class="pin-input-container">
         <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="0">
         <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="1">
@@ -1042,6 +1042,43 @@
       <div class="pin-actions">
         <button id="cancel-pin-btn" class="btn btn-secondary">Batal</button>
         <button id="verify-pin-btn" class="btn btn-primary">Masuk</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN Setup Modal (Jika belum ada PIN) -->
+  <div id="pin-setup-modal" class="pin-modal">
+    <div class="pin-modal-content">
+      <h2>🔐 Setup PIN Keamanan</h2>
+      <p>Buat PIN 6 digit pertama kali untuk keamanan aplikasi</p>
+      <div id="setup-step-1">
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Langkah 1: Masukkan PIN baru</p>
+        <div class="pin-input-container">
+          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="0">
+          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="1">
+          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="2">
+          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="3">
+          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="4">
+          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="5">
+        </div>
+        <div class="pin-actions">
+          <button id="setup-next-btn" class="btn btn-primary" style="width: 100%;">Lanjut →</button>
+        </div>
+      </div>
+      <div id="setup-step-2" style="display: none;">
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Langkah 2: Konfirmasi PIN</p>
+        <div class="pin-input-container">
+          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="0">
+          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="1">
+          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="2">
+          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="3">
+          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="4">
+          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="5">
+        </div>
+        <div class="pin-actions">
+          <button id="setup-back-btn" class="btn btn-secondary">← Kembali</button>
+          <button id="setup-confirm-btn" class="btn btn-success">✅ Simpan PIN</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1146,8 +1183,21 @@
     // ============================================
     // KONFIGURASI
     // ============================================
-    const CORRECT_PIN = '123456'; // Ganti dengan PIN yang diinginkan
     const PAGE_LIMIT = 10;
+    const STORAGE_KEY = 'vpsManager_PIN';
+
+    // Helper untuk mengambil PIN dari localStorage
+    function getStoredPIN() {
+      return localStorage.getItem(STORAGE_KEY) || null;
+    }
+
+    // Helper untuk menyimpan PIN ke localStorage
+    function setStoredPIN(pin) {
+      localStorage.setItem(STORAGE_KEY, pin);
+    }
+
+    // Ambil PIN saat startup
+    let CORRECT_PIN = getStoredPIN();
 
     // ============================================
     // STATE VARIABLES
@@ -1160,6 +1210,9 @@
     let itemToDeleteId = null;
     let itemToRenewId = null;
     let pendingAction = null;
+    let appLocked = true; // App dimulai dalam status terkunci
+    let setupStep = 1; // Step untuk PIN setup: 1 = input, 2 = confirm
+    let tmpSetupPIN = ''; // Temporary storage untuk PIN yang dibuat di setup
 
     // ============================================
     // DOM ELEMENTS
@@ -1190,7 +1243,16 @@
       elements.pinDigits = document.querySelectorAll('.pin-digit');
       elements.verifyPinBtn = document.getElementById('verify-pin-btn');
       elements.cancelPinBtn = document.getElementById('cancel-pin-btn');
-      elements.filterStartDateInput = document.getElementById('filter-start-date');
+      elements.pinModalTitle = document.getElementById('pin-modal-title');
+      elements.pinModalSubtitle = document.getElementById('pin-modal-subtitle');
+      elements.pinSetupModal = document.getElementById('pin-setup-modal');
+      elements.pinDigitsSetup = document.querySelectorAll('.pin-digit-setup');
+      elements.pinDigitsConfirm = document.querySelectorAll('.pin-digit-confirm');
+      elements.setupNextBtn = document.getElementById('setup-next-btn');
+      elements.setupBackBtn = document.getElementById('setup-back-btn');
+      elements.setupConfirmBtn = document.getElementById('setup-confirm-btn');
+      elements.setupStep1 = document.getElementById('setup-step-1');
+      elements.setupStep2 = document.getElementById('setup-step-2');
       elements.filterEndDateInput = document.getElementById('filter-end-date');
       elements.applyFilterBtn = document.getElementById('apply-filter-btn');
       elements.resetFilterBtn = document.getElementById('reset-filter-btn');
@@ -1207,17 +1269,29 @@
     // ============================================
     document.addEventListener('DOMContentLoaded', () => {
       initElements();
-      fetchData();
+      
+      // Cek apakah PIN sudah diatur
+      if (!CORRECT_PIN) {
+        // PIN belum ada, tampilkan setup modal
+        appLocked = true;
+        showPINSetupModal();
+      } else {
+        // PIN sudah ada, tampilkan login modal
+        appLocked = true;
+        showPINLoginModal();
+      }
+      
       initPINHandler();
+      initPINSetupHandler();
+      initEventListeners();
       initBottomNav();
       initSearch();
-      initEventListeners();
     });
 
     function initEventListeners() {
-      elements.addBtn.addEventListener('click', () => showModal('add'));
-      elements.broadcastBtn.addEventListener('click', showBroadcastModal);
-      elements.checkExpiredBtn.addEventListener('click', handleCheckExpired);
+      elements.addBtn.addEventListener('click', () => requirePIN(() => showModal('add')));
+      elements.broadcastBtn.addEventListener('click', () => requirePIN(() => showBroadcastModal()));
+      elements.checkExpiredBtn.addEventListener('click', () => requirePIN(() => handleCheckExpired()));
       elements.dataForm.addEventListener('submit', handleFormSubmit);
       elements.renewForm.addEventListener('submit', handleRenewSubmit);
       elements.broadcastForm.addEventListener('submit', handleBroadcastSubmit);
@@ -1270,6 +1344,7 @@
     function searchData() {
       showSpinner();
       currentSearchQuery = elements.searchInput.value.trim().toLowerCase();
+      currentPage = 1; // Reset ke halaman 1 saat search
       
       google.script.run
         .withSuccessHandler((response) => {
@@ -1367,11 +1442,21 @@
       const enteredPIN = Array.from(elements.pinDigits).map(d => d.value).join('');
       
       if (enteredPIN === CORRECT_PIN) {
-        hidePINModal();
-        showNotification('PIN benar! ✅', 'success');
-        if (pendingAction) {
-          pendingAction();
-          pendingAction = null;
+        if (appLocked) {
+          // Login saat aplikasi dimulai
+          appLocked = false;
+          hidePINModal();
+          showNotification('✅ Login berhasil!', 'success');
+          fetchData();
+          initPINHandler(); // Re-init handler supaya modal berfungsi untuk aksi sensitif
+        } else {
+          // Verifikasi untuk aksi sensitif
+          hidePINModal();
+          showNotification('PIN benar! ✅', 'success');
+          if (pendingAction) {
+            pendingAction();
+            pendingAction = null;
+          }
         }
       } else {
         elements.pinDigits.forEach(d => {
@@ -1388,6 +1473,9 @@
     }
 
     function showPINModal() {
+      elements.pinModalTitle.textContent = '🔐 Keamanan';
+      elements.pinModalSubtitle.textContent = 'Masukkan PIN 6 digit untuk melanjutkan aksi ini';
+      clearPIN();
       elements.pinModal.style.display = 'block';
       elements.pinDigits[0].focus();
     }
@@ -1407,6 +1495,159 @@
     function requirePIN(action) {
       pendingAction = action;
       showPINModal();
+    }
+
+    // ============================================
+    // PIN LOGIN & SETUP MODALS
+    // ============================================
+    function showPINLoginModal() {
+      elements.pinModalTitle.textContent = '🔐 Keamanan';
+      elements.pinModalSubtitle.textContent = 'Masukkan PIN 6 digit untuk melanjutkan';
+      clearPIN();
+      elements.pinModal.style.display = 'block';
+      elements.pinDigits[0].focus();
+    }
+
+    function showPINSetupModal() {
+      elements.pinSetupModal.style.display = 'block';
+      elements.setupStep1.style.display = 'block';
+      elements.setupStep2.style.display = 'none';
+      setupStep = 1;
+      tmpSetupPIN = '';
+      clearPINSetup();
+      elements.pinDigitsSetup[0].focus();
+    }
+
+    function hidePINSetupModal() {
+      elements.pinSetupModal.style.display = 'none';
+      setupStep = 1;
+      tmpSetupPIN = '';
+      clearPINSetup();
+      clearPINConfirm();
+    }
+
+    function clearPINSetup() {
+      elements.pinDigitsSetup.forEach(d => {
+        d.value = '';
+        d.classList.remove('filled', 'pin-error');
+      });
+    }
+
+    function clearPINConfirm() {
+      elements.pinDigitsConfirm.forEach(d => {
+        d.value = '';
+        d.classList.remove('filled', 'pin-error');
+      });
+    }
+
+    // ============================================
+    // PIN SETUP HANDLER
+    // ============================================
+    function initPINSetupHandler() {
+      // Setup Step 1: Input PIN baru
+      elements.pinDigitsSetup.forEach((digit, index) => {
+        digit.addEventListener('input', (e) => {
+          const value = e.target.value;
+          if (!/^\d$/.test(value)) {
+            e.target.value = '';
+            return;
+          }
+          e.target.classList.add('filled');
+          if (index < elements.pinDigitsSetup.length - 1) {
+            elements.pinDigitsSetup[index + 1].focus();
+          }
+          if (isPINSetupComplete()) {
+            // Auto lanjut ke step 2
+            elements.setupNextBtn.click();
+          }
+        });
+        
+        digit.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            elements.pinDigitsSetup[index - 1].focus();
+            elements.pinDigitsSetup[index - 1].value = '';
+            elements.pinDigitsSetup[index - 1].classList.remove('filled');
+          }
+        });
+        
+        digit.addEventListener('focus', (e) => e.target.select());
+      });
+
+      // Setup Step 2: Confirm PIN
+      elements.pinDigitsConfirm.forEach((digit, index) => {
+        digit.addEventListener('input', (e) => {
+          const value = e.target.value;
+          if (!/^\d$/.test(value)) {
+            e.target.value = '';
+            return;
+          }
+          e.target.classList.add('filled');
+          if (index < elements.pinDigitsConfirm.length - 1) {
+            elements.pinDigitsConfirm[index + 1].focus();
+          }
+        });
+        
+        digit.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            elements.pinDigitsConfirm[index - 1].focus();
+            elements.pinDigitsConfirm[index - 1].value = '';
+            elements.pinDigitsConfirm[index - 1].classList.remove('filled');
+          }
+        });
+        
+        digit.addEventListener('focus', (e) => e.target.select());
+      });
+
+      // Button handlers
+      elements.setupNextBtn.addEventListener('click', () => {
+        const setupPIN = Array.from(elements.pinDigitsSetup).map(d => d.value).join('');
+        if (setupPIN.length !== 6) {
+          showNotification('PIN harus 6 digit!', 'error');
+          return;
+        }
+        tmpSetupPIN = setupPIN;
+        setupStep = 2;
+        elements.setupStep1.style.display = 'none';
+        elements.setupStep2.style.display = 'block';
+        clearPINConfirm();
+        elements.pinDigitsConfirm[0].focus();
+      });
+
+      elements.setupBackBtn.addEventListener('click', () => {
+        setupStep = 1;
+        elements.setupStep1.style.display = 'block';
+        elements.setupStep2.style.display = 'none';
+        clearPINConfirm();
+        elements.pinDigitsSetup[0].focus();
+      });
+
+      elements.setupConfirmBtn.addEventListener('click', () => {
+        const confirmPIN = Array.from(elements.pinDigitsConfirm).map(d => d.value).join('');
+        if (confirmPIN !== tmpSetupPIN) {
+          showNotification('PIN tidak cocok! Silakan coba lagi.', 'error');
+          elements.pinDigitsConfirm.forEach(d => {
+            d.classList.add('pin-error');
+            d.value = '';
+            d.classList.remove('filled');
+          });
+          setTimeout(() => {
+            elements.pinDigitsConfirm.forEach(d => d.classList.remove('pin-error'));
+            elements.pinDigitsConfirm[0].focus();
+          }, 400);
+          return;
+        }
+        // PIN cocok, simpan ke localStorage dan ubah CORRECT_PIN
+        setStoredPIN(tmpSetupPIN);
+        CORRECT_PIN = tmpSetupPIN;
+        hidePINSetupModal();
+        appLocked = false;
+        showNotification('✅ PIN berhasil dibuat! Aplikasi sekarang terbuka.', 'success');
+        fetchData();
+      });
+    }
+
+    function isPINSetupComplete() {
+      return Array.from(elements.pinDigitsSetup).every(d => d.value !== '');
     }
 
     // ============================================
@@ -1445,6 +1686,9 @@
           ? `<button class="btn btn-renew renew-btn" data-id="${item.id}">🔄</button>`
           : '';
 
+        // Escape data item untuk data attribute
+        const itemDataAttr = JSON.stringify(item).replace(/"/g, '&quot;');
+
         const row = `
           <tr>
             <td data-label="Username">${item.username}</td>
@@ -1455,7 +1699,7 @@
             <td data-label="RAM">${item.ram || '-'}</td>
             <td data-label="Pesan">${item.pesan ? (item.pesan.substring(0, 30) + (item.pesan.length > 30 ? '...' : '')) : '-'}</td>
             <td data-label="Aksi" class="action-buttons">
-              <button class="btn btn-warning edit-btn" data-id="${item.id}">✏️</button>
+              <button class="btn btn-warning edit-btn" data-id="${item.id}" data-item="${itemDataAttr}">✏️</button>
               ${renewButton}
               <button class="btn btn-danger delete-btn" data-id="${item.id}">🗑️</button>
             </td>
@@ -1563,20 +1807,22 @@
       currentEditId = null;
       
       if (type === 'edit') {
-        modalTitle.textContent = 'Edit Data Penyewaan';
-        const row = document.querySelector(`.edit-btn[data-id="${id}"]`).closest('tr');
+        elements.modalTitle.textContent = 'Edit Data Penyewaan';
+        const editBtn = document.querySelector(`.edit-btn[data-id="${id}"]`);
+        const itemData = JSON.parse(editBtn.getAttribute('data-item'));
+        
         document.getElementById('data-id').value = id;
-        document.getElementById('username').value = row.cells[0].textContent;
-        document.getElementById('tipeAkun').value = row.cells[1].textContent.trim().replace('#', '');
+        document.getElementById('username').value = itemData.username;
+        document.getElementById('tipeAkun').value = itemData.tipeAkun;
         document.getElementById('tipeAkun').disabled = true;
         document.getElementById('masaAktifHari').disabled = true;
-        document.getElementById('ipVps').value = row.cells[3].textContent;
-        document.getElementById('emailMember').value = row.cells[4].textContent || '';
-        document.getElementById('ram').value = row.cells[5].textContent || '';
-        document.getElementById('pesan').value = row.cells[6].textContent.trim() || '';
+        document.getElementById('ipVps').value = itemData.ipVps;
+        document.getElementById('emailMember').value = itemData.emailMember || '';
+        document.getElementById('ram').value = itemData.ram || '';
+        document.getElementById('pesan').value = itemData.pesan || '';
         currentEditId = id;
       } else {
-        modalTitle.textContent = 'Tambah Penyewaan Baru';
+        elements.modalTitle.textContent = 'Tambah Penyewaan Baru';
         document.getElementById('tipeAkun').disabled = false;
       }
       elements.formModal.style.display = 'block';
