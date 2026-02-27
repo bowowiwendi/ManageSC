@@ -61,9 +61,9 @@
     initSearch();
   });
   
-  addBtn.addEventListener('click', () => showModal('add'));
-  broadcastBtn.addEventListener('click', showBroadcastModal);
-  checkExpiredBtn.addEventListener('click', handleCheckExpired);
+  addBtn.addEventListener('click', () => requirePIN(() => showModal('add')));
+  broadcastBtn.addEventListener('click', () => requirePIN(() => showBroadcastModal()));
+  checkExpiredBtn.addEventListener('click', () => requirePIN(() => handleCheckExpired()));
   dataForm.addEventListener('submit', handleFormSubmit);
   renewForm.addEventListener('submit', handleRenewSubmit);
   broadcastForm.addEventListener('submit', handleBroadcastSubmit);
