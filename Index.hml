@@ -2,6 +2,10 @@
 <html lang="id">
 <head>
   <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <?!= include('Styles.html'); ?>
 </head>
 <body>
@@ -17,12 +21,10 @@
         <button id="broadcast-btn" class="btn btn-info">📢 Broadcast Pesan</button>
         <button id="check-expired-btn" class="btn btn-warning">📧 Cek Akun Kadaluarsa</button>
       </div>
-      
+
       <div id="notification" class="notification"></div>
 
-      <!-- ======================================================= -->
-      <!-- PENAMBAHAN BARU: Kontrol Filter Tanggal                  -->
-      <!-- ======================================================= -->
+      <!-- Filter Data -->
       <div class="filter-controls">
         <h3>Filter Data</h3>
         <div class="form-group-inline">
@@ -54,16 +56,14 @@
           <tbody id="table-body">
             <!-- Data akan dimuat di sini oleh JavaScript -->
           </tbody>
-          
-          <!-- ======================================================= -->
-          <!-- PENAMBAHAN BARU: Footer Tabel untuk Pagination         -->
-          <!-- ======================================================= -->
+
+          <!-- Pagination Footer -->
           <tfoot>
             <tr>
               <td colspan="8">
                 <div class="pagination-wrapper">
                   <div id="pagination-info" class="pagination-info">
-                    <!-- Info data akan dimuat di sini, contoh: "Menampilkan 1-10 dari 50 data" -->
+                    <!-- Info data akan dimuat di sini -->
                   </div>
                   <div id="pagination-controls" class="pagination-controls">
                     <!-- Kontrol tombol akan dimuat di sini oleh JavaScript -->
@@ -81,7 +81,7 @@
     </main>
   </div>
 
-  <!-- Modal untuk Tambah/Edit Data (Tidak berubah) -->
+  <!-- Modal untuk Tambah/Edit Data -->
   <div id="form-modal" class="modal">
     <div class="modal-content">
       <span class="close-btn">&times;</span>
@@ -90,7 +90,7 @@
         <input type="hidden" id="data-id">
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" id="username" required>
+          <input type="text" id="username" required placeholder="Masukkan username">
         </div>
         <div class="form-group">
           <label for="tipeAkun">Tipe Akun</label>
@@ -102,12 +102,12 @@
         </div>
         <div class="form-group">
           <label for="masaAktifHari">Jumlah Hari (untuk #limit)</label>
-          <input type="number" id="masaAktifHari" placeholder="Contoh: 30" disabled>
+          <input type="number" id="masaAktifHari" placeholder="Contoh: 30" disabled min="1">
           <small>Masa aktif dihitung dari hari ini.</small>
         </div>
         <div class="form-group">
           <label for="ipVps">IP VPS</label>
-          <input type="text" id="ipVps" required placeholder="Misal: 192.168.1.1">
+          <input type="text" id="ipVps" required placeholder="Contoh: 192.168.1.1">
         </div>
         <div class="form-group">
           <label for="emailMember">EMAIL MEMBER</label>
@@ -129,7 +129,7 @@
     </div>
   </div>
 
-  <!-- Modal Konfirmasi Hapus (Tidak berubah) -->
+  <!-- Modal Konfirmasi Hapus -->
   <div id="delete-modal" class="modal">
     <div class="modal-content">
       <h2>⚠️ Konfirmasi Hapus</h2>
@@ -141,7 +141,7 @@
     </div>
   </div>
 
-  <!-- Modal Renew (Tidak berubah) -->
+  <!-- Modal Renew -->
   <div id="renew-modal" class="modal">
     <div class="modal-content">
       <h2>🔄 Perpanjang Masa Aktif</h2>
@@ -149,7 +149,7 @@
       <form id="renew-form">
         <div class="form-group">
           <label for="renew-hari">Jumlah Hari</label>
-          <input type="number" id="renew-hari" placeholder="Contoh: 30" required>
+          <input type="number" id="renew-hari" placeholder="Contoh: 30" required min="1">
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-success">🔄 Perpanjang</button>
@@ -159,7 +159,7 @@
     </div>
   </div>
 
-  <!-- Modal Broadcast (Tidak berubah) -->
+  <!-- Modal Broadcast -->
   <div id="broadcast-modal" class="modal">
     <div class="modal-content">
       <h2>📢 Kirim Broadcast ke Semua Member</h2>
