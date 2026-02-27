@@ -6,7 +6,921 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <?!= include('Styles.html'); ?>
+  <title>Manajemen Penyewaan VPS</title>
+  
+  <style>
+    /* ============================================
+       CSS VARIABLES & RESET
+       ============================================ */
+    :root {
+      --primary-color: #4f46e5;
+      --primary-dark: #4338ca;
+      --primary-light: #818cf8;
+      --secondary-color: #64748b;
+      --success-color: #10b981;
+      --success-dark: #059669;
+      --danger-color: #ef4444;
+      --danger-dark: #dc2626;
+      --warning-color: #f59e0b;
+      --warning-dark: #d97706;
+      --info-color: #06b6d4;
+      --light-color: #f8fafc;
+      --dark-color: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --box-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--dark-color);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ============================================
+       MAIN CONTAINER
+       ============================================ */
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow-lg);
+      backdrop-filter: blur(10px);
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem 0;
+      color: var(--primary-color);
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--box-shadow-sm);
+      letter-spacing: -0.01em;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--box-shadow);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary { 
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); 
+      color: white; 
+    }
+    .btn-success { 
+      background: linear-gradient(135deg, var(--success-color), var(--success-dark)); 
+      color: white; 
+    }
+    .btn-danger { 
+      background: linear-gradient(135deg, var(--danger-color), var(--danger-dark)); 
+      color: white; 
+    }
+    .btn-secondary { 
+      background: linear-gradient(135deg, var(--secondary-color), #475569); 
+      color: white; 
+    }
+    .btn-warning { 
+      background: linear-gradient(135deg, var(--warning-color), var(--warning-dark)); 
+      color: white; 
+    }
+    .btn-info { 
+      background: linear-gradient(135deg, var(--info-color), #0891b2); 
+      color: white; 
+    }
+    .btn-renew { 
+      background: linear-gradient(135deg, var(--info-color), #0891b2); 
+      color: white; 
+      padding: 8px 16px;
+    }
+
+    .button-group {
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .button-group .btn {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    /* ============================================
+       SEARCH BAR
+       ============================================ */
+    .search-container {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .search-container h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1.1rem;
+      color: var(--dark-color);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-container h3::before {
+      content: '🔎';
+    }
+
+    .search-input-wrapper {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      font-size: 0.95rem;
+      font-family: var(--font-family);
+      background: white;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-btn {
+      padding: 12px 20px;
+      white-space: nowrap;
+    }
+
+    /* ============================================
+       FILTER CONTROLS
+       ============================================ */
+    .filter-controls {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .filter-controls h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1.1rem;
+      color: var(--dark-color);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-controls h3::before {
+      content: '🔍';
+    }
+
+    .form-group-inline {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .form-group-inline label {
+      margin: 0;
+      font-weight: 500;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .form-group-inline input[type="date"] {
+      flex: 1;
+      min-width: 150px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      font-size: 0.9rem;
+      font-family: var(--font-family);
+      background: white;
+      transition: border-color 0.2s;
+    }
+
+    .form-group-inline input[type="date"]:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .filter-controls .btn {
+      margin-top: 0.5rem;
+    }
+
+    /* ============================================
+       TABLE STYLES
+       ============================================ */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      background: white;
+      box-shadow: var(--box-shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    thead {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+    }
+
+    th {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      transition: background-color 0.2s;
+    }
+
+    tbody tr:nth-of-type(even) { 
+      background-color: #fafbfc; 
+    }
+
+    tbody tr:hover { 
+      background-color: #f1f5f9; 
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .action-buttons {
+      white-space: nowrap;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .action-buttons .btn {
+      font-size: 0.85rem;
+      padding: 6px 12px;
+    }
+
+    /* ============================================
+       PAGINATION
+       ============================================ */
+    .pagination-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .pagination-info {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-page-number {
+      padding: 8px 14px;
+      font-size: 0.875rem;
+      min-width: 40px;
+      background: white;
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-page-number:hover:not(.active) {
+      background: #f1f5f9;
+      transform: none;
+    }
+
+    .btn-page-number.active {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      cursor: default;
+      border-color: var(--primary-color);
+    }
+
+    .btn-page-number.active:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ============================================
+       BADGES
+       ============================================ */
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 600;
+      color: white;
+      display: inline-block;
+      letter-spacing: 0.02em;
+      box-shadow: var(--box-shadow-sm);
+    }
+    .badge-limit { 
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    .badge-unli { 
+      background: linear-gradient(135deg, #10b981, #059669); 
+    }
+
+    /* ============================================
+       MODALS
+       ============================================ */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+      animation: fadeIn 0.3s;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 550px;
+      position: relative;
+      animation: slideIn 0.3s;
+      box-shadow: var(--box-shadow-lg);
+    }
+
+    .close-btn {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover {
+      color: var(--dark-color);
+      background: #f1f5f9;
+    }
+
+    .modal-content h2 {
+      margin: 0 0 1.5rem 0;
+      color: var(--dark-color);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: var(--dark-color);
+      font-size: 0.9rem;
+    }
+
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      box-sizing: border-box;
+      font-family: var(--font-family);
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .form-group input:disabled {
+      background-color: #f1f5f9;
+      cursor: not-allowed;
+      color: var(--text-muted);
+    }
+
+    .form-group small {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.8em;
+      color: var(--text-muted);
+    }
+
+    .form-actions {
+      text-align: right;
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* ============================================
+       NOTIFICATION
+       ============================================ */
+    .notification {
+      padding: 16px 20px;
+      margin: 1rem 0;
+      border-radius: var(--border-radius-sm);
+      display: none;
+      font-weight: 500;
+      animation: slideIn 0.3s;
+      border-left: 4px solid;
+    }
+
+    .notification.success { 
+      background-color: #d1fae5; 
+      color: #065f46; 
+      border-left-color: var(--success-color);
+    }
+
+    .notification.error { 
+      background-color: #fee2e2; 
+      color: #991b1b; 
+      border-left-color: var(--danger-color);
+    }
+
+    /* ============================================
+       SPINNER
+       ============================================ */
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--primary-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
+      display: none;
+    }
+
+    /* ============================================
+       BOTTOM NAVIGATION (Mobile)
+       ============================================ */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      padding: 8px 0;
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+
+    .bottom-nav-items {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      border-radius: var(--border-radius-sm);
+    }
+
+    .bottom-nav-item:hover {
+      background: #f1f5f9;
+      color: var(--primary-color);
+    }
+
+    .bottom-nav-item.active {
+      color: var(--primary-color);
+      background: rgba(79, 70, 229, 0.1);
+    }
+
+    .bottom-nav-item .nav-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    /* ============================================
+       PIN MODAL
+       ============================================ */
+    .pin-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+      animation: fadeIn 0.3s;
+      backdrop-filter: blur(8px);
+    }
+
+    .pin-modal-content {
+      background: white;
+      margin: 20% auto;
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 400px;
+      position: relative;
+      animation: slideIn 0.3s;
+      box-shadow: var(--box-shadow-lg);
+      text-align: center;
+    }
+
+    .pin-modal-content h2 {
+      margin: 0 0 0.5rem 0;
+      color: var(--dark-color);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .pin-modal-content p {
+      margin: 0 0 1.5rem 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .pin-input-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .pin-digit {
+      width: 50px;
+      height: 60px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      font-family: var(--font-family);
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .pin-digit:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .pin-digit.filled {
+      border-color: var(--primary-color);
+      background: rgba(79, 70, 229, 0.05);
+    }
+
+    .pin-error {
+      border-color: var(--danger-color) !important;
+      animation: shake 0.4s;
+    }
+
+    .pin-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .pin-actions .btn {
+      flex: 1;
+      max-width: 150px;
+    }
+
+    /* ============================================
+       ANIMATIONS
+       ============================================ */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { 
+        transform: translateY(-30px); 
+        opacity: 0; 
+      }
+      to { 
+        transform: translateY(0); 
+        opacity: 1; 
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    /* ============================================
+       RESPONSIVE DESIGN
+       ============================================ */
+    @media screen and (max-width: 1024px) {
+      .container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        padding-bottom: 80px;
+      }
+
+      .container {
+        margin: 0.75rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        padding-bottom: 1.5rem;
+      }
+
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      header p {
+        font-size: 0.85rem;
+      }
+
+      .button-group {
+        display: none;
+      }
+
+      .search-container {
+        padding: 1rem;
+      }
+
+      .search-input-wrapper {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .search-input {
+        width: 100%;
+      }
+
+      .search-btn {
+        width: 100%;
+      }
+
+      .filter-controls {
+        padding: 1rem;
+      }
+
+      .form-group-inline {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+      }
+
+      .filter-controls .btn {
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+
+      .pagination-wrapper {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      #data-table thead {
+        display: none;
+      }
+
+      #data-table, 
+      #data-table tbody, 
+      #data-table tr, 
+      #data-table td {
+        display: block;
+        width: 100% !important;
+      }
+
+      #data-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: 12px;
+        background: white;
+        box-shadow: var(--box-shadow-sm);
+      }
+
+      #data-table td {
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        position: relative;
+        padding: 10px 10px 10px 45%;
+        text-align: left;
+        white-space: normal;
+        font-size: 0.9rem;
+      }
+
+      #data-table td.action-buttons {
+        padding: 12px 10px;
+        text-align: center;
+      }
+
+      #data-table td.action-buttons:before {
+        content: "Aksi:";
+        position: static;
+        width: auto;
+        padding-right: 0;
+        display: block;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      .bottom-nav {
+        display: block;
+      }
+
+      .modal-content {
+        margin: 10% auto;
+        padding: 1.5rem;
+        width: 95%;
+      }
+
+      .form-group input, 
+      .form-group select, 
+      .form-group textarea {
+        font-size: 1rem;
+        padding: 14px;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .form-actions .btn {
+        width: 100%;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        margin: 0.5rem;
+        padding: 0.75rem;
+      }
+
+      header h1 {
+        font-size: 1.2rem;
+      }
+
+      .pin-modal-content {
+        margin: 30% auto;
+        padding: 2rem 1.5rem;
+      }
+
+      .pin-digit {
+        width: 45px;
+        height: 55px;
+        font-size: 1.3rem;
+      }
+
+      .bottom-nav-item {
+        padding: 6px 8px;
+        font-size: 0.7rem;
+      }
+
+      .bottom-nav-item .nav-icon {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -64,19 +978,14 @@
             </tr>
           </thead>
           <tbody id="table-body">
-            <!-- Data akan dimuat di sini oleh JavaScript -->
+            <!-- Data will be loaded here -->
           </tbody>
-
-          <!-- Pagination Footer -->
           <tfoot>
             <tr>
               <td colspan="8">
                 <div class="pagination-wrapper">
-                  <div id="pagination-info" class="pagination-info">
-                    <!-- Info data akan dimuat di sini -->
-                  </div>
+                  <div id="pagination-info" class="pagination-info"></div>
                   <div id="pagination-controls" class="pagination-controls">
-                    <!-- Kontrol tombol akan dimuat di sini oleh JavaScript -->
                     <button id="prev-page-btn" class="btn btn-secondary" disabled>&laquo; Sebelumnya</button>
                     <span id="page-numbers"></span>
                     <button id="next-page-btn" class="btn btn-secondary" disabled>Selanjutnya &raquo;</button>
@@ -137,7 +1046,7 @@
     </div>
   </div>
 
-  <!-- Modal untuk Tambah/Edit Data -->
+  <!-- Form Modal -->
   <div id="form-modal" class="modal">
     <div class="modal-content">
       <span class="close-btn">&times;</span>
@@ -185,7 +1094,7 @@
     </div>
   </div>
 
-  <!-- Modal Konfirmasi Hapus -->
+  <!-- Delete Modal -->
   <div id="delete-modal" class="modal">
     <div class="modal-content">
       <h2>⚠️ Konfirmasi Hapus</h2>
@@ -197,7 +1106,7 @@
     </div>
   </div>
 
-  <!-- Modal Renew -->
+  <!-- Renew Modal -->
   <div id="renew-modal" class="modal">
     <div class="modal-content">
       <h2>🔄 Perpanjang Masa Aktif</h2>
@@ -215,7 +1124,7 @@
     </div>
   </div>
 
-  <!-- Modal Broadcast -->
+  <!-- Broadcast Modal -->
   <div id="broadcast-modal" class="modal">
     <div class="modal-content">
       <h2>📢 Kirim Broadcast ke Semua Member</h2>
@@ -233,6 +1142,514 @@
     </div>
   </div>
 
-  <?!= include('JavaScript.html'); ?>
+  <script>
+    // ============================================
+    // KONFIGURASI
+    // ============================================
+    const CORRECT_PIN = '123456'; // Ganti dengan PIN yang diinginkan
+    const PAGE_LIMIT = 10;
+
+    // ============================================
+    // STATE VARIABLES
+    // ============================================
+    let currentPage = 1;
+    let currentStartDate = null;
+    let currentEndDate = null;
+    let currentSearchQuery = '';
+    let currentEditId = null;
+    let itemToDeleteId = null;
+    let itemToRenewId = null;
+    let pendingAction = null;
+
+    // ============================================
+    // DOM ELEMENTS
+    // ============================================
+    const elements = {};
+
+    function initElements() {
+      elements.tableBody = document.getElementById('table-body');
+      elements.addBtn = document.getElementById('add-btn');
+      elements.broadcastBtn = document.getElementById('broadcast-btn');
+      elements.checkExpiredBtn = document.getElementById('check-expired-btn');
+      elements.formModal = document.getElementById('form-modal');
+      elements.deleteModal = document.getElementById('delete-modal');
+      elements.renewModal = document.getElementById('renew-modal');
+      elements.broadcastModal = document.getElementById('broadcast-modal');
+      elements.pinModal = document.getElementById('pin-modal');
+      elements.dataForm = document.getElementById('data-form');
+      elements.renewForm = document.getElementById('renew-form');
+      elements.broadcastForm = document.getElementById('broadcast-form');
+      elements.modalTitle = document.getElementById('modal-title');
+      elements.notification = document.getElementById('notification');
+      elements.spinner = document.getElementById('loading-spinner');
+      elements.tipeAkunSelect = document.getElementById('tipeAkun');
+      elements.masaAktifInput = document.getElementById('masaAktifHari');
+      elements.searchInput = document.getElementById('search-input');
+      elements.searchBtn = document.getElementById('search-btn');
+      elements.bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+      elements.pinDigits = document.querySelectorAll('.pin-digit');
+      elements.verifyPinBtn = document.getElementById('verify-pin-btn');
+      elements.cancelPinBtn = document.getElementById('cancel-pin-btn');
+      elements.filterStartDateInput = document.getElementById('filter-start-date');
+      elements.filterEndDateInput = document.getElementById('filter-end-date');
+      elements.applyFilterBtn = document.getElementById('apply-filter-btn');
+      elements.resetFilterBtn = document.getElementById('reset-filter-btn');
+      elements.paginationInfo = document.getElementById('pagination-info');
+      elements.prevPageBtn = document.getElementById('prev-page-btn');
+      elements.nextPageBtn = document.getElementById('next-page-btn');
+      elements.pageNumbersSpan = document.getElementById('page-numbers');
+      elements.closeBtns = document.querySelectorAll('.close-btn, .cancel-btn');
+      elements.confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    }
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      initElements();
+      fetchData();
+      initPINHandler();
+      initBottomNav();
+      initSearch();
+      initEventListeners();
+    });
+
+    function initEventListeners() {
+      elements.addBtn.addEventListener('click', () => showModal('add'));
+      elements.broadcastBtn.addEventListener('click', showBroadcastModal);
+      elements.checkExpiredBtn.addEventListener('click', handleCheckExpired);
+      elements.dataForm.addEventListener('submit', handleFormSubmit);
+      elements.renewForm.addEventListener('submit', handleRenewSubmit);
+      elements.broadcastForm.addEventListener('submit', handleBroadcastSubmit);
+      elements.confirmDeleteBtn.addEventListener('click', confirmDelete);
+      elements.applyFilterBtn.addEventListener('click', applyFilters);
+      elements.resetFilterBtn.addEventListener('click', resetFilters);
+      elements.prevPageBtn.addEventListener('click', () => goToPage(currentPage - 1));
+      elements.nextPageBtn.addEventListener('click', () => goToPage(currentPage + 1));
+
+      elements.tipeAkunSelect.addEventListener('change', () => {
+        if (elements.tipeAkunSelect.value === 'limit') {
+          elements.masaAktifInput.disabled = false;
+        } else {
+          elements.masaAktifInput.value = '';
+          elements.masaAktifInput.disabled = true;
+        }
+      });
+
+      elements.closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          hideModal(elements.formModal);
+          hideModal(elements.deleteModal);
+          hideModal(elements.renewModal);
+          hideModal(elements.broadcastModal);
+        });
+      });
+
+      elements.tableBody.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.classList.contains('edit-btn')) {
+          showModal('edit', target.getAttribute('data-id'));
+        } else if (target.classList.contains('delete-btn')) {
+          showDeleteConfirmation(target.getAttribute('data-id'));
+        } else if (target.classList.contains('renew-btn')) {
+          showRenewalModal(target.getAttribute('data-id'));
+        }
+      });
+    }
+
+    // ============================================
+    // SEARCH FUNCTIONALITY
+    // ============================================
+    function initSearch() {
+      elements.searchBtn.addEventListener('click', searchData);
+      elements.searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchData();
+      });
+    }
+
+    function searchData() {
+      showSpinner();
+      currentSearchQuery = elements.searchInput.value.trim().toLowerCase();
+      
+      google.script.run
+        .withSuccessHandler((response) => {
+          const filteredData = filterDataBySearch(response.data);
+          renderTable(filteredData);
+          renderPagination(response.pagination);
+          hideSpinner();
+        })
+        .withFailureHandler(onFailure)
+        .getDataImproved(currentPage, PAGE_LIMIT, currentStartDate, currentEndDate);
+    }
+
+    function filterDataBySearch(data) {
+      if (!currentSearchQuery) return data;
+      return data.filter(item => {
+        const usernameMatch = item.username.toLowerCase().includes(currentSearchQuery);
+        const ipMatch = item.ipVps.toLowerCase().includes(currentSearchQuery);
+        return usernameMatch || ipMatch;
+      });
+    }
+
+    // ============================================
+    // BOTTOM NAVIGATION
+    // ============================================
+    function initBottomNav() {
+      elements.bottomNavItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const action = item.getAttribute('data-action');
+          elements.bottomNavItems.forEach(nav => nav.classList.remove('active'));
+          item.classList.add('active');
+          
+          switch(action) {
+            case 'home':
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              break;
+            case 'add':
+              requirePIN(() => showModal('add'));
+              break;
+            case 'search':
+              elements.searchInput.focus();
+              elements.searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              break;
+            case 'broadcast':
+              requirePIN(() => showBroadcastModal());
+              break;
+            case 'check':
+              requirePIN(() => handleCheckExpired());
+              break;
+          }
+        });
+      });
+    }
+
+    // ============================================
+    // PIN HANDLER
+    // ============================================
+    function initPINHandler() {
+      elements.pinDigits.forEach((digit, index) => {
+        digit.addEventListener('input', (e) => {
+          const value = e.target.value;
+          if (!/^\d$/.test(value)) {
+            e.target.value = '';
+            return;
+          }
+          e.target.classList.add('filled');
+          if (index < elements.pinDigits.length - 1) {
+            elements.pinDigits[index + 1].focus();
+          }
+          if (isPINComplete()) verifyPIN();
+        });
+        
+        digit.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            elements.pinDigits[index - 1].focus();
+            elements.pinDigits[index - 1].value = '';
+            elements.pinDigits[index - 1].classList.remove('filled');
+          }
+        });
+        
+        digit.addEventListener('focus', (e) => e.target.select());
+      });
+      
+      elements.verifyPinBtn.addEventListener('click', verifyPIN);
+      elements.cancelPinBtn.addEventListener('click', () => {
+        hidePINModal();
+        pendingAction = null;
+      });
+    }
+
+    function isPINComplete() {
+      return Array.from(elements.pinDigits).every(d => d.value !== '');
+    }
+
+    function verifyPIN() {
+      const enteredPIN = Array.from(elements.pinDigits).map(d => d.value).join('');
+      
+      if (enteredPIN === CORRECT_PIN) {
+        hidePINModal();
+        showNotification('PIN benar! ✅', 'success');
+        if (pendingAction) {
+          pendingAction();
+          pendingAction = null;
+        }
+      } else {
+        elements.pinDigits.forEach(d => {
+          d.classList.add('pin-error');
+          d.value = '';
+          d.classList.remove('filled');
+        });
+        setTimeout(() => {
+          elements.pinDigits.forEach(d => d.classList.remove('pin-error'));
+          elements.pinDigits[0].focus();
+        }, 400);
+        showNotification('PIN salah! Silakan coba lagi.', 'error');
+      }
+    }
+
+    function showPINModal() {
+      elements.pinModal.style.display = 'block';
+      elements.pinDigits[0].focus();
+    }
+
+    function hidePINModal() {
+      elements.pinModal.style.display = 'none';
+      clearPIN();
+    }
+
+    function clearPIN() {
+      elements.pinDigits.forEach(d => {
+        d.value = '';
+        d.classList.remove('filled', 'pin-error');
+      });
+    }
+
+    function requirePIN(action) {
+      pendingAction = action;
+      showPINModal();
+    }
+
+    // ============================================
+    // DATA FETCHING & RENDERING
+    // ============================================
+    function fetchData() {
+      showSpinner();
+      google.script.run
+        .withSuccessHandler(renderTableAndPagination)
+        .withFailureHandler(onFailure)
+        .getDataImproved(currentPage, PAGE_LIMIT, currentStartDate, currentEndDate);
+    }
+
+    function renderTableAndPagination(response) {
+      let data = response.data;
+      if (currentSearchQuery) {
+        data = filterDataBySearch(data);
+      }
+      renderTable(data);
+      renderPagination(response.pagination);
+      hideSpinner();
+    }
+
+    function renderTable(data) {
+      elements.tableBody.innerHTML = '';
+      if (data.length === 0) {
+        const message = currentSearchQuery 
+          ? `Tidak ditemukan data untuk pencarian "${currentSearchQuery}".`
+          : 'Tidak ada data penyewaan.';
+        elements.tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center;">${message}</td></tr>`;
+        return;
+      }
+
+      data.forEach(item => {
+        const renewButton = item.tipeAkun === 'limit'
+          ? `<button class="btn btn-renew renew-btn" data-id="${item.id}">🔄</button>`
+          : '';
+
+        const row = `
+          <tr>
+            <td data-label="Username">${item.username}</td>
+            <td data-label="Tipe Akun"><span class="badge ${item.tipeAkun === 'unli' ? 'badge-unli' : 'badge-limit'}">#${item.tipeAkun}</span></td>
+            <td data-label="Masa Aktif">${item.masaAktif}</td>
+            <td data-label="IP VPS">${item.ipVps}</td>
+            <td data-label="Email Member">${item.emailMember || '-'}</td>
+            <td data-label="RAM">${item.ram || '-'}</td>
+            <td data-label="Pesan">${item.pesan ? (item.pesan.substring(0, 30) + (item.pesan.length > 30 ? '...' : '')) : '-'}</td>
+            <td data-label="Aksi" class="action-buttons">
+              <button class="btn btn-warning edit-btn" data-id="${item.id}">✏️</button>
+              ${renewButton}
+              <button class="btn btn-danger delete-btn" data-id="${item.id}">🗑️</button>
+            </td>
+          </tr>
+        `;
+        elements.tableBody.innerHTML += row;
+      });
+    }
+
+    function renderPagination(pagination) {
+      const { currentPage: currPage, totalPages, totalItems } = pagination;
+      const startItem = (currPage - 1) * PAGE_LIMIT + 1;
+      const endItem = Math.min(currPage * PAGE_LIMIT, totalItems);
+      elements.paginationInfo.textContent = `Menampilkan ${startItem}-${endItem} dari ${totalItems} data`;
+
+      elements.prevPageBtn.disabled = currPage === 1;
+      elements.nextPageBtn.disabled = currPage === totalPages;
+
+      elements.pageNumbersSpan.innerHTML = '';
+      for (let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.textContent = i;
+        pageBtn.classList.add('btn', 'btn-page-number');
+        if (i === currPage) pageBtn.classList.add('active');
+        pageBtn.addEventListener('click', () => goToPage(i));
+        elements.pageNumbersSpan.appendChild(pageBtn);
+      }
+    }
+
+    // ============================================
+    // FILTER & PAGINATION
+    // ============================================
+    function applyFilters() {
+      currentStartDate = elements.filterStartDateInput.value || null;
+      currentEndDate = elements.filterEndDateInput.value || null;
+      currentPage = 1;
+      fetchData();
+    }
+
+    function resetFilters() {
+      elements.filterStartDateInput.value = '';
+      elements.filterEndDateInput.value = '';
+      currentStartDate = null;
+      currentEndDate = null;
+      currentPage = 1;
+      fetchData();
+    }
+
+    function goToPage(page) {
+      if (page < 1) return;
+      currentPage = page;
+      fetchData();
+    }
+
+    // ============================================
+    // FORM HANDLERS
+    // ============================================
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const formData = {
+        id: document.getElementById('data-id').value,
+        username: document.getElementById('username').value,
+        tipeAkun: document.getElementById('tipeAkun').value,
+        masaAktifHari: document.getElementById('masaAktifHari').value,
+        ipVps: document.getElementById('ipVps').value,
+        emailMember: document.getElementById('emailMember').value,
+        ram: document.getElementById('ram').value,
+        pesan: document.getElementById('pesan').value
+      };
+
+      showSpinner();
+      if (currentEditId) {
+        google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).updateData(formData);
+      } else {
+        google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).addData(formData);
+      }
+    }
+
+    function handleRenewSubmit(e) {
+      e.preventDefault();
+      const jumlahHari = document.getElementById('renew-hari').value;
+      if (!itemToRenewId || !jumlahHari) return;
+      showSpinner();
+      google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).renewData(itemToRenewId, jumlahHari);
+    }
+
+    function handleBroadcastSubmit(e) {
+      e.preventDefault();
+      const message = document.getElementById('broadcast-message-text').value;
+      if (!message) return;
+      showSpinner();
+      google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).sendBroadcastToAll(message);
+    }
+
+    function handleCheckExpired() {
+      showSpinner();
+      google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).runCheckAndNotify();
+    }
+
+    // ============================================
+    // MODAL HANDLERS
+    // ============================================
+    function showModal(type, id = null) {
+      resetForm();
+      currentEditId = null;
+      
+      if (type === 'edit') {
+        modalTitle.textContent = 'Edit Data Penyewaan';
+        const row = document.querySelector(`.edit-btn[data-id="${id}"]`).closest('tr');
+        document.getElementById('data-id').value = id;
+        document.getElementById('username').value = row.cells[0].textContent;
+        document.getElementById('tipeAkun').value = row.cells[1].textContent.trim().replace('#', '');
+        document.getElementById('tipeAkun').disabled = true;
+        document.getElementById('masaAktifHari').disabled = true;
+        document.getElementById('ipVps').value = row.cells[3].textContent;
+        document.getElementById('emailMember').value = row.cells[4].textContent || '';
+        document.getElementById('ram').value = row.cells[5].textContent || '';
+        document.getElementById('pesan').value = row.cells[6].textContent.trim() || '';
+        currentEditId = id;
+      } else {
+        modalTitle.textContent = 'Tambah Penyewaan Baru';
+        document.getElementById('tipeAkun').disabled = false;
+      }
+      elements.formModal.style.display = 'block';
+    }
+
+    function showDeleteConfirmation(id) {
+      itemToDeleteId = id;
+      elements.deleteModal.style.display = 'block';
+    }
+
+    function showRenewalModal(id) {
+      itemToRenewId = id;
+      document.getElementById('renew-hari').value = '';
+      elements.renewModal.style.display = 'block';
+    }
+
+    function showBroadcastModal() {
+      document.getElementById('broadcast-message-text').value = '';
+      elements.broadcastModal.style.display = 'block';
+    }
+
+    function hideModal(modal) {
+      modal.style.display = 'none';
+    }
+
+    function confirmDelete() {
+      if (itemToDeleteId) {
+        showSpinner();
+        google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).deleteData(itemToDeleteId);
+      }
+    }
+
+    function resetForm() {
+      elements.dataForm.reset();
+      elements.masaAktifInput.disabled = true;
+      document.getElementById('tipeAkun').disabled = false;
+    }
+
+    // ============================================
+    // UTILITIES
+    // ============================================
+    function showNotification(message, type) {
+      elements.notification.textContent = message;
+      elements.notification.className = `notification ${type}`;
+      elements.notification.style.display = 'block';
+      setTimeout(() => {
+        elements.notification.style.display = 'none';
+      }, 4000);
+    }
+
+    function showSpinner() {
+      elements.spinner.style.display = 'block';
+      elements.tableBody.style.opacity = '0.5';
+    }
+
+    function hideSpinner() {
+      elements.spinner.style.display = 'none';
+      elements.tableBody.style.opacity = '1';
+    }
+
+    function onSuccess(response) {
+      hideModal(elements.formModal);
+      hideModal(elements.deleteModal);
+      hideModal(elements.renewModal);
+      hideModal(elements.broadcastModal);
+      showNotification(response.message, 'success');
+      fetchData();
+    }
+
+    function onFailure(error) {
+      showNotification('Terjadi kesalahan: ' + error.message, 'error');
+      hideSpinner();
+    }
+  </script>
 </body>
 </html>
