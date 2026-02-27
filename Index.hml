@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <?!= include('Styles.html'); ?>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🖥️ Manajemen Penyewaan VPS</h1>
+      <p>Aplikasi CRUD untuk program penyewaan VPS Limit & Unlimited</p>
+    </header>
+
+    <main>
+      <div class="button-group">
+        <button id="add-btn" class="btn btn-primary">➕ Tambah Penyewaan Baru</button>
+        <button id="broadcast-btn" class="btn btn-info">📢 Broadcast Pesan</button>
+        <button id="check-expired-btn" class="btn btn-warning">📧 Cek Akun Kadaluarsa</button>
+      </div>
+      
+      <div id="notification" class="notification"></div>
+
+      <!-- ======================================================= -->
+      <!-- PENAMBAHAN BARU: Kontrol Filter Tanggal                  -->
+      <!-- ======================================================= -->
+      <div class="filter-controls">
+        <h3>Filter Data</h3>
+        <div class="form-group-inline">
+          <label for="filter-start-date">Dari Tanggal:</label>
+          <input type="date" id="filter-start-date">
+        </div>
+        <div class="form-group-inline">
+          <label for="filter-end-date">Sampai Tanggal:</label>
+          <input type="date" id="filter-end-date">
+        </div>
+        <button id="apply-filter-btn" class="btn btn-secondary">Terapkan Filter</button>
+        <button id="reset-filter-btn" class="btn btn-secondary">Reset</button>
+      </div>
+
+      <div class="table-container">
+        <table id="data-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Tipe Akun</th>
+              <th>Masa Aktif</th>
+              <th>IP VPS</th>
+              <th>EMAIL MEMBER</th>
+              <th>RAM</th>
+              <th>Pesan</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Data akan dimuat di sini oleh JavaScript -->
+          </tbody>
+          
+          <!-- ======================================================= -->
+          <!-- PENAMBAHAN BARU: Footer Tabel untuk Pagination         -->
+          <!-- ======================================================= -->
+          <tfoot>
+            <tr>
+              <td colspan="8">
+                <div class="pagination-wrapper">
+                  <div id="pagination-info" class="pagination-info">
+                    <!-- Info data akan dimuat di sini, contoh: "Menampilkan 1-10 dari 50 data" -->
+                  </div>
+                  <div id="pagination-controls" class="pagination-controls">
+                    <!-- Kontrol tombol akan dimuat di sini oleh JavaScript -->
+                    <button id="prev-page-btn" class="btn btn-secondary" disabled>&laquo; Sebelumnya</button>
+                    <span id="page-numbers"></span>
+                    <button id="next-page-btn" class="btn btn-secondary" disabled>Selanjutnya &raquo;</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+        <div id="loading-spinner" class="spinner"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal untuk Tambah/Edit Data (Tidak berubah) -->
+  <div id="form-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2 id="modal-title">Tambah Penyewaan Baru</h2>
+      <form id="data-form">
+        <input type="hidden" id="data-id">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required>
+        </div>
+        <div class="form-group">
+          <label for="tipeAkun">Tipe Akun</label>
+          <select id="tipeAkun" required>
+            <option value="">-- Pilih Tipe --</option>
+            <option value="limit">#limit</option>
+            <option value="unli">#unli (lifetime)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="masaAktifHari">Jumlah Hari (untuk #limit)</label>
+          <input type="number" id="masaAktifHari" placeholder="Contoh: 30" disabled>
+          <small>Masa aktif dihitung dari hari ini.</small>
+        </div>
+        <div class="form-group">
+          <label for="ipVps">IP VPS</label>
+          <input type="text" id="ipVps" required placeholder="Misal: 192.168.1.1">
+        </div>
+        <div class="form-group">
+          <label for="emailMember">EMAIL MEMBER</label>
+          <input type="email" id="emailMember" placeholder="member@example.com">
+        </div>
+        <div class="form-group">
+          <label for="ram">RAM</label>
+          <input type="text" id="ram" placeholder="Contoh: 2GB">
+        </div>
+        <div class="form-group">
+          <label for="pesan">Pesan (untuk broadcast)</label>
+          <textarea id="pesan" rows="3" placeholder="Pesan khusus untuk member ini (jika ada)"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">💾 Simpan</button>
+          <button type="button" class="btn btn-secondary cancel-btn">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Konfirmasi Hapus (Tidak berubah) -->
+  <div id="delete-modal" class="modal">
+    <div class="modal-content">
+      <h2>⚠️ Konfirmasi Hapus</h2>
+      <p>Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.</p>
+      <div class="form-actions">
+        <button id="confirm-delete-btn" class="btn btn-danger">🗑️ Hapus</button>
+        <button class="btn btn-secondary cancel-btn">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Renew (Tidak berubah) -->
+  <div id="renew-modal" class="modal">
+    <div class="modal-content">
+      <h2>🔄 Perpanjang Masa Aktif</h2>
+      <p>Masukkan jumlah hari yang ingin ditambahkan.</p>
+      <form id="renew-form">
+        <div class="form-group">
+          <label for="renew-hari">Jumlah Hari</label>
+          <input type="number" id="renew-hari" placeholder="Contoh: 30" required>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">🔄 Perpanjang</button>
+          <button type="button" class="btn btn-secondary cancel-btn">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Broadcast (Tidak berubah) -->
+  <div id="broadcast-modal" class="modal">
+    <div class="modal-content">
+      <h2>📢 Kirim Broadcast ke Semua Member</h2>
+      <p>Masukkan pesan yang akan dikirim ke semua member yang memiliki alamat email.</p>
+      <form id="broadcast-form">
+        <div class="form-group">
+          <label for="broadcast-message-text">Pesan Broadcast</label>
+          <textarea id="broadcast-message-text" rows="5" placeholder="Tulis pesan Anda di sini..." required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">📢 Kirim</button>
+          <button type="button" class="btn btn-secondary cancel-btn">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <?!= include('JavaScript.html'); ?>
+</body>
+</html>

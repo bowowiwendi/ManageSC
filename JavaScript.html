@@ -1,0 +1,344 @@
+<script>
+  // --- ELEMEN DOM ---
+  const tableBody = document.getElementById('table-body');
+  const addBtn = document.getElementById('add-btn');
+  const broadcastBtn = document.getElementById('broadcast-btn');
+  const checkExpiredBtn = document.getElementById('check-expired-btn');
+  const formModal = document.getElementById('form-modal');
+  const deleteModal = document.getElementById('delete-modal');
+  const renewModal = document.getElementById('renew-modal');
+  const broadcastModal = document.getElementById('broadcast-modal');
+  const dataForm = document.getElementById('data-form');
+  const renewForm = document.getElementById('renew-form');
+  const broadcastForm = document.getElementById('broadcast-form');
+  const modalTitle = document.getElementById('modal-title');
+  const notification = document.getElementById('notification');
+  const spinner = document.getElementById('loading-spinner');
+  const closeBtns = document.querySelectorAll('.close-btn, .cancel-btn');
+  const tipeAkunSelect = document.getElementById('tipeAkun');
+  const masaAktifInput = document.getElementById('masaAktifHari');
+  
+  // --- PENAMBAHAN & PERUBAHAN: Referensi Elemen DOM Baru ---
+  const filterStartDateInput = document.getElementById('filter-start-date');
+  const filterEndDateInput = document.getElementById('filter-end-date');
+  const applyFilterBtn = document.getElementById('apply-filter-btn');
+  const resetFilterBtn = document.getElementById('reset-filter-btn');
+  const paginationInfo = document.getElementById('pagination-info');
+  const paginationControls = document.getElementById('pagination-controls');
+  const prevPageBtn = document.getElementById('prev-page-btn');
+  const nextPageBtn = document.getElementById('next-page-btn');
+  const pageNumbersSpan = document.getElementById('page-numbers');
+
+  let currentEditId = null;
+  let itemToDeleteId = null;
+  let itemToRenewId = null;
+
+  // --- PENAMBAHAN & PERUBAHAN: Variabel State untuk Pagination & Filter ---
+  let currentPage = 1;
+  const pageLimit = 10; // Sesuaikan dengan limit di backend
+  let currentStartDate = null;
+  let currentEndDate = null;
+
+  // --- EVENT LISTENERS ---
+  document.addEventListener('DOMContentLoaded', fetchData);
+  addBtn.addEventListener('click', () => showModal('add'));
+  broadcastBtn.addEventListener('click', showBroadcastModal);
+  checkExpiredBtn.addEventListener('click', handleCheckExpired);
+  dataForm.addEventListener('submit', handleFormSubmit);
+  renewForm.addEventListener('submit', handleRenewSubmit);
+  broadcastForm.addEventListener('submit', handleBroadcastSubmit);
+  document.getElementById('confirm-delete-btn').addEventListener('click', confirmDelete);
+  
+  // --- PENAMBAHAN & PERUBAHAN: Event Listener untuk Filter & Pagination ---
+  applyFilterBtn.addEventListener('click', applyFilters);
+  resetFilterBtn.addEventListener('click', resetFilters);
+  prevPageBtn.addEventListener('click', () => goToPage(currentPage - 1));
+  nextPageBtn.addEventListener('click', () => goToPage(currentPage + 1));
+
+  tipeAkunSelect.addEventListener('change', () => {
+    if (tipeAkunSelect.value === 'limit') {
+      masaAktifInput.disabled = false;
+    } else {
+      masaAktifInput.value = '';
+      masaAktifInput.disabled = true;
+    }
+  });
+  
+  closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      hideModal(formModal);
+      hideModal(deleteModal);
+      hideModal(renewModal);
+      hideModal(broadcastModal);
+    });
+  });
+
+  tableBody.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target.classList.contains('edit-btn')) {
+      const id = target.getAttribute('data-id');
+      showModal('edit', id);
+    } else if (target.classList.contains('delete-btn')) {
+      const id = target.getAttribute('data-id');
+      showDeleteConfirmation(id);
+    } else if (target.classList.contains('renew-btn')) {
+      const id = target.getAttribute('data-id');
+      showRenewalModal(id);
+    }
+  });
+
+  // --- FUNGSI-FUNGSI UTAMA ---
+
+  // --- PENAMBAHAN & PERUBAHAN: Fungsi fetchData yang baru ---
+  function fetchData() {
+    showSpinner();
+    google.script.run
+      .withSuccessHandler(renderTableAndPagination) // Ubah nama handler
+      .withFailureHandler(onFailure)
+      .getDataImproved(currentPage, pageLimit, currentStartDate, currentEndDate); // Panggil fungsi baru dengan parameter
+  }
+
+  // --- PENAMBAHAN & PERUBAHAN: Fungsi render utama ---
+  function renderTableAndPagination(response) {
+    renderTable(response.data);
+    renderPagination(response.pagination);
+    hideSpinner();
+  }
+  
+  // --- PENAMBAHAN & PERUBAHAN: Fungsi render tabel yang menerima array data ---
+  function renderTable(data) {
+      tableBody.innerHTML = '';
+      if (data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Tidak ada data penyewaan.</td></tr>';
+      } else {
+        data.forEach(item => {
+          const renewButton = item.tipeAkun === 'limit' 
+            ? `<button class="btn btn-renew renew-btn" data-id="${item.id}">🔄</button>` 
+            : '';
+            
+          const row = `
+            <tr>
+              <td data-label="Username">${item.username}</td>
+              <td data-label="Tipe Akun"><span class="badge ${item.tipeAkun === 'unli' ? 'badge-unli' : 'badge-limit'}">#${item.tipeAkun}</span></td>
+              <td data-label="Masa Aktif">${item.masaAktif}</td>
+              <td data-label="IP VPS">${item.ipVps}</td>
+              <td data-label="Email Member">${item.emailMember}</td>
+              <td data-label="RAM">${item.ram}</td>
+              <td data-label="Pesan">${item.pesan.substring(0, 30)}${item.pesan.length > 30 ? '...' : ''}</td>
+              <td data-label="Aksi" class="action-buttons">
+                <button class="btn btn-warning edit-btn" data-id="${item.id}">✏️</button>
+                ${renewButton}
+                <button class="btn btn-danger delete-btn" data-id="${item.id}">🗑️</button>
+              </td>
+            </tr>
+          `;
+          tableBody.innerHTML += row;
+        });
+      }
+  }
+
+  // --- PENAMBAHAN & PERUBAHAN: Fungsi render pagination ---
+  function renderPagination(pagination) {
+    const { currentPage, totalPages, totalItems } = pagination;
+    
+    // Update info
+    const startItem = (currentPage - 1) * pageLimit + 1;
+    const endItem = Math.min(currentPage * pageLimit, totalItems);
+    paginationInfo.textContent = `Menampilkan ${startItem}-${endItem} dari ${totalItems} data`;
+
+    // Update tombol Previous/Next
+    prevPageBtn.disabled = currentPage === 1;
+    nextPageBtn.disabled = currentPage === totalPages;
+
+    // Generate nomor halaman
+    pageNumbersSpan.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+      const pageBtn = document.createElement('button');
+      pageBtn.textContent = i;
+      pageBtn.classList.add('btn', 'btn-page-number');
+      if (i === currentPage) {
+        pageBtn.classList.add('active');
+      }
+      pageBtn.addEventListener('click', () => goToPage(i));
+      pageNumbersSpan.appendChild(pageBtn);
+    }
+  }
+  
+  // --- PENAMBAHAN & PERUBAHAN: Fungsi handler untuk filter & navigasi ---
+  function applyFilters() {
+    currentStartDate = filterStartDateInput.value || null;
+    currentEndDate = filterEndDateInput.value || null;
+    currentPage = 1; // Kembali ke halaman 1 saat filter diterapkan
+    fetchData();
+  }
+
+  function resetFilters() {
+    filterStartDateInput.value = '';
+    filterEndDateInput.value = '';
+    currentStartDate = null;
+    currentEndDate = null;
+    currentPage = 1; // Kembali ke halaman 1
+    fetchData();
+  }
+
+  function goToPage(page) {
+    // Validasi agar tidak melewati batas
+    if (page < 1) return;
+    // Perlu mendapatkan totalPages, tapi kita belum memilikinya di sini.
+    // Solusi: Biarkan fetchData() yang menanganinya. Tombol akan dinonaktifkan di renderPagination.
+    currentPage = page;
+    fetchData();
+  }
+
+  // --- FUNGSI LAINNYA (TIDAK BERUBAH) ---
+  function handleFormSubmit(e) {
+    e.preventDefault();
+    const formData = {
+      id: document.getElementById('data-id').value,
+      username: document.getElementById('username').value,
+      tipeAkun: document.getElementById('tipeAkun').value,
+      masaAktifHari: document.getElementById('masaAktifHari').value,
+      ipVps: document.getElementById('ipVps').value,
+      emailMember: document.getElementById('emailMember').value,
+      ram: document.getElementById('ram').value,
+      pesan: document.getElementById('pesan').value
+    };
+
+    showSpinner();
+    if (currentEditId) {
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .updateData(formData);
+    } else {
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .addData(formData);
+    }
+  }
+
+  function handleRenewSubmit(e) {
+    e.preventDefault();
+    const jumlahHari = document.getElementById('renew-hari').value;
+    if (!itemToRenewId || !jumlahHari) return;
+
+    showSpinner();
+    google.script.run
+      .withSuccessHandler(onSuccess)
+      .withFailureHandler(onFailure)
+      .renewData(itemToRenewId, jumlahHari);
+  }
+
+  function handleBroadcastSubmit(e) {
+    e.preventDefault();
+    const message = document.getElementById('broadcast-message-text').value;
+    if (!message) return;
+
+    showSpinner();
+    google.script.run
+      .withSuccessHandler(onSuccess)
+      .withFailureHandler(onFailure)
+      .sendBroadcastToAll(message);
+  }
+
+  function handleCheckExpired() {
+    showSpinner();
+    google.script.run
+      .withSuccessHandler(onSuccess)
+      .withFailureHandler(onFailure)
+      .runCheckAndNotify();
+  }
+
+  function showModal(type, id = null) {
+    resetForm();
+    currentEditId = null;
+    if (type === 'edit') {
+      modalTitle.textContent = 'Edit Data Penyewaan';
+      const row = document.querySelector(`.edit-btn[data-id="${id}"]`).closest('tr');
+      document.getElementById('data-id').value = id;
+      document.getElementById('username').value = row.cells[0].textContent;
+      document.getElementById('tipeAkun').value = row.cells[1].textContent.trim().replace('#', '');
+      document.getElementById('tipeAkun').disabled = true;
+      document.getElementById('masaAktifHari').disabled = true;
+      document.getElementById('ipVps').value = row.cells[3].textContent;
+      document.getElementById('emailMember').value = row.cells[4].textContent;
+      document.getElementById('ram').value = row.cells[5].textContent;
+      document.getElementById('pesan').value = row.cells[6].textContent.trim();
+      currentEditId = id;
+    } else {
+      modalTitle.textContent = 'Tambah Penyewaan Baru';
+      document.getElementById('tipeAkun').disabled = false;
+    }
+    formModal.style.display = 'block';
+  }
+
+  function showDeleteConfirmation(id) {
+    itemToDeleteId = id;
+    deleteModal.style.display = 'block';
+  }
+
+  function showRenewalModal(id) {
+    itemToRenewId = id;
+    document.getElementById('renew-hari').value = '';
+    renewModal.style.display = 'block';
+  }
+
+  function showBroadcastModal() {
+    document.getElementById('broadcast-message-text').value = '';
+    broadcastModal.style.display = 'block';
+  }
+
+  function hideModal(modal) {
+    modal.style.display = 'none';
+  }
+
+  function confirmDelete() {
+    if (itemToDeleteId) {
+      showSpinner();
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .deleteData(itemToDeleteId);
+    }
+  }
+  
+  function resetForm() {
+    dataForm.reset();
+    masaAktifInput.disabled = true;
+    document.getElementById('tipeAkun').disabled = false;
+  }
+
+  function showNotification(message, type) {
+    notification.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.style.display = 'block';
+    setTimeout(() => {
+      notification.style.display = 'none';
+    }, 4000);
+  }
+
+  function showSpinner() {
+    spinner.style.display = 'block';
+    tableBody.style.opacity = '0.5';
+  }
+
+  function hideSpinner() {
+    spinner.style.display = 'none';
+    tableBody.style.opacity = '1';
+  }
+
+  function onSuccess(response) {
+    hideModal(formModal);
+    hideModal(deleteModal);
+    hideModal(renewModal);
+    hideModal(broadcastModal);
+    showNotification(response.message, 'success');
+    fetchData(); // fetchData() akan memuat ulang dengan state pagination & filter saat ini
+  }
+
+  function onFailure(error) {
+    showNotification('Terjadi kesalahan: ' + error.message, 'error');
+    hideSpinner();
+  }
+</script>
