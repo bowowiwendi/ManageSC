@@ -16,6 +16,7 @@
     </header>
 
     <main>
+      <!-- Top Button Group (Desktop) -->
       <div class="button-group">
         <button id="add-btn" class="btn btn-primary">➕ Tambah Penyewaan Baru</button>
         <button id="broadcast-btn" class="btn btn-info">📢 Broadcast Pesan</button>
@@ -23,6 +24,15 @@
       </div>
 
       <div id="notification" class="notification"></div>
+
+      <!-- Search Bar -->
+      <div class="search-container">
+        <h3>Cari Data</h3>
+        <div class="search-input-wrapper">
+          <input type="text" id="search-input" class="search-input" placeholder="Cari berdasarkan username atau IP VPS...">
+          <button id="search-btn" class="btn btn-primary search-btn">🔍 Cari</button>
+        </div>
+      </div>
 
       <!-- Filter Data -->
       <div class="filter-controls">
@@ -79,6 +89,52 @@
         <div id="loading-spinner" class="spinner"></div>
       </div>
     </main>
+  </div>
+
+  <!-- Bottom Navigation (Mobile) -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-items">
+      <button class="bottom-nav-item active" data-action="home">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </button>
+      <button class="bottom-nav-item" data-action="add">
+        <span class="nav-icon">➕</span>
+        <span>Tambah</span>
+      </button>
+      <button class="bottom-nav-item" data-action="search">
+        <span class="nav-icon">🔍</span>
+        <span>Cari</span>
+      </button>
+      <button class="bottom-nav-item" data-action="broadcast">
+        <span class="nav-icon">📢</span>
+        <span>Broadcast</span>
+      </button>
+      <button class="bottom-nav-item" data-action="check">
+        <span class="nav-icon">📧</span>
+        <span>Cek</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- PIN Modal -->
+  <div id="pin-modal" class="pin-modal">
+    <div class="pin-modal-content">
+      <h2>🔐 Keamanan</h2>
+      <p>Masukkan PIN 6 digit untuk melanjutkan</p>
+      <div class="pin-input-container">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="0">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="1">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="2">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="3">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="4">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="5">
+      </div>
+      <div class="pin-actions">
+        <button id="cancel-pin-btn" class="btn btn-secondary">Batal</button>
+        <button id="verify-pin-btn" class="btn btn-primary">Masuk</button>
+      </div>
+    </div>
   </div>
 
   <!-- Modal untuk Tambah/Edit Data -->
