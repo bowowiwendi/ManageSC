@@ -36,11 +36,7 @@
       --box-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: var(--font-family);
@@ -51,9 +47,6 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* ============================================
-       MAIN CONTAINER
-       ============================================ */
     .container {
       max-width: 1400px;
       margin: 2rem auto;
@@ -76,18 +69,10 @@
       color: var(--primary-color);
       font-size: 2rem;
       font-weight: 700;
-      letter-spacing: -0.025em;
     }
 
-    header p {
-      margin: 0;
-      color: var(--text-muted);
-      font-size: 1rem;
-    }
+    header p { margin: 0; color: var(--text-muted); font-size: 1rem; }
 
-    /* ============================================
-       BUTTONS
-       ============================================ */
     .btn {
       padding: 12px 24px;
       border: none;
@@ -96,69 +81,27 @@
       font-size: 0.95rem;
       font-weight: 600;
       transition: all 0.3s ease;
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       box-shadow: var(--box-shadow-sm);
-      letter-spacing: -0.01em;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--box-shadow);
-    }
+    .btn:hover { transform: translateY(-2px); box-shadow: var(--box-shadow); }
+    .btn:active { transform: translateY(0); }
 
-    .btn:active {
-      transform: translateY(0);
-    }
+    .btn-primary { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; }
+    .btn-success { background: linear-gradient(135deg, var(--success-color), var(--success-dark)); color: white; }
+    .btn-danger { background: linear-gradient(135deg, var(--danger-color), var(--danger-dark)); color: white; }
+    .btn-secondary { background: linear-gradient(135deg, var(--secondary-color), #475569); color: white; }
+    .btn-warning { background: linear-gradient(135deg, var(--warning-color), var(--warning-dark)); color: white; }
+    .btn-info { background: linear-gradient(135deg, var(--info-color), #0891b2); color: white; }
+    .btn-renew { background: linear-gradient(135deg, var(--info-color), #0891b2); color: white; padding: 8px 16px; }
 
-    .btn-primary { 
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); 
-      color: white; 
-    }
-    .btn-success { 
-      background: linear-gradient(135deg, var(--success-color), var(--success-dark)); 
-      color: white; 
-    }
-    .btn-danger { 
-      background: linear-gradient(135deg, var(--danger-color), var(--danger-dark)); 
-      color: white; 
-    }
-    .btn-secondary { 
-      background: linear-gradient(135deg, var(--secondary-color), #475569); 
-      color: white; 
-    }
-    .btn-warning { 
-      background: linear-gradient(135deg, var(--warning-color), var(--warning-dark)); 
-      color: white; 
-    }
-    .btn-info { 
-      background: linear-gradient(135deg, var(--info-color), #0891b2); 
-      color: white; 
-    }
-    .btn-renew { 
-      background: linear-gradient(135deg, var(--info-color), #0891b2); 
-      color: white; 
-      padding: 8px 16px;
-    }
+    .button-group { margin-bottom: 1.5rem; display: flex; gap: 12px; flex-wrap: wrap; }
+    .button-group .btn { flex: 1; min-width: 200px; }
 
-    .button-group {
-      margin-bottom: 1.5rem;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .button-group .btn {
-      flex: 1;
-      min-width: 200px;
-    }
-
-    /* ============================================
-       SEARCH BAR
-       ============================================ */
     .search-container {
       background: linear-gradient(135deg, #f8fafc, #f1f5f9);
       padding: 1.5rem;
@@ -170,22 +113,14 @@
     .search-container h3 {
       margin: 0 0 1rem 0;
       font-size: 1.1rem;
-      color: var(--dark-color);
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 8px;
     }
+    .search-container h3::before { content: '🔎'; }
 
-    .search-container h3::before {
-      content: '🔎';
-    }
-
-    .search-input-wrapper {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-    }
+    .search-input-wrapper { display: flex; gap: 0.75rem; align-items: center; }
 
     .search-input {
       flex: 1;
@@ -204,18 +139,9 @@
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
 
-    .search-input::placeholder {
-      color: var(--text-muted);
-    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-btn { padding: 12px 20px; white-space: nowrap; }
 
-    .search-btn {
-      padding: 12px 20px;
-      white-space: nowrap;
-    }
-
-    /* ============================================
-       FILTER CONTROLS
-       ============================================ */
     .filter-controls {
       background: linear-gradient(135deg, #f8fafc, #f1f5f9);
       padding: 1.5rem;
@@ -227,32 +153,15 @@
     .filter-controls h3 {
       margin: 0 0 1rem 0;
       font-size: 1.1rem;
-      color: var(--dark-color);
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 8px;
     }
+    .filter-controls h3::before { content: '🔍'; }
 
-    .filter-controls h3::before {
-      content: '🔍';
-    }
-
-    .form-group-inline {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .form-group-inline label {
-      margin: 0;
-      font-weight: 500;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      white-space: nowrap;
-    }
-
+    .form-group-inline { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .form-group-inline label { margin: 0; font-weight: 500; color: var(--text-muted); font-size: 0.9rem; white-space: nowrap; }
     .form-group-inline input[type="date"] {
       flex: 1;
       min-width: 150px;
@@ -262,22 +171,14 @@
       font-size: 0.9rem;
       font-family: var(--font-family);
       background: white;
-      transition: border-color 0.2s;
     }
-
     .form-group-inline input[type="date"]:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
+    .filter-controls .btn { margin-top: 0.5rem; }
 
-    .filter-controls .btn {
-      margin-top: 0.5rem;
-    }
-
-    /* ============================================
-       TABLE STYLES
-       ============================================ */
     .table-container {
       overflow-x: auto;
       border-radius: var(--border-radius);
@@ -286,62 +187,18 @@
       box-shadow: var(--box-shadow-sm);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0;
-    }
+    table { width: 100%; border-collapse: collapse; margin: 0; }
+    th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    thead { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; }
+    th { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; white-space: nowrap; }
+    tbody tr { transition: background-color 0.2s; }
+    tbody tr:nth-of-type(even) { background-color: #fafbfc; }
+    tbody tr:hover { background-color: #f1f5f9; }
+    tbody tr:last-child td { border-bottom: none; }
 
-    th, td {
-      padding: 14px 16px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
+    .action-buttons { white-space: nowrap; display: flex; gap: 6px; flex-wrap: wrap; }
+    .action-buttons .btn { font-size: 0.85rem; padding: 6px 12px; }
 
-    thead {
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-      color: white;
-    }
-
-    th {
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
-
-    tbody tr {
-      transition: background-color 0.2s;
-    }
-
-    tbody tr:nth-of-type(even) { 
-      background-color: #fafbfc; 
-    }
-
-    tbody tr:hover { 
-      background-color: #f1f5f9; 
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    .action-buttons {
-      white-space: nowrap;
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .action-buttons .btn {
-      font-size: 0.85rem;
-      padding: 6px 12px;
-    }
-
-    /* ============================================
-       PAGINATION
-       ============================================ */
     .pagination-wrapper {
       display: flex;
       justify-content: space-between;
@@ -353,18 +210,8 @@
       gap: 1rem;
     }
 
-    .pagination-info {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .pagination-controls {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
+    .pagination-info { font-size: 0.875rem; color: var(--text-muted); font-weight: 500; }
+    .pagination-controls { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 
     .btn-page-number {
       padding: 8px 14px;
@@ -373,27 +220,15 @@
       background: white;
       border: 1px solid var(--border-color);
     }
-
-    .btn-page-number:hover:not(.active) {
-      background: #f1f5f9;
-      transform: none;
-    }
-
+    .btn-page-number:hover:not(.active) { background: #f1f5f9; transform: none; }
     .btn-page-number.active {
       background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
       color: white;
       cursor: default;
       border-color: var(--primary-color);
     }
+    .btn-page-number.active:hover { transform: none; box-shadow: none; }
 
-    .btn-page-number.active:hover {
-      transform: none;
-      box-shadow: none;
-    }
-
-    /* ============================================
-       BADGES
-       ============================================ */
     .badge {
       padding: 6px 12px;
       border-radius: 20px;
@@ -401,20 +236,11 @@
       font-weight: 600;
       color: white;
       display: inline-block;
-      letter-spacing: 0.02em;
       box-shadow: var(--box-shadow-sm);
     }
-    .badge-limit { 
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: white;
-    }
-    .badge-unli { 
-      background: linear-gradient(135deg, #10b981, #059669); 
-    }
+    .badge-limit { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+    .badge-unli { background: linear-gradient(135deg, #10b981, #059669); }
 
-    /* ============================================
-       MODALS
-       ============================================ */
     .modal {
       display: none;
       position: fixed;
@@ -457,34 +283,12 @@
       border-radius: 50%;
       transition: all 0.2s;
     }
+    .close-btn:hover { color: var(--dark-color); background: #f1f5f9; }
+    .modal-content h2 { margin: 0 0 1.5rem 0; color: var(--dark-color); font-size: 1.5rem; font-weight: 700; }
 
-    .close-btn:hover {
-      color: var(--dark-color);
-      background: #f1f5f9;
-    }
-
-    .modal-content h2 {
-      margin: 0 0 1.5rem 0;
-      color: var(--dark-color);
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      color: var(--dark-color);
-      font-size: 0.9rem;
-    }
-
-    .form-group input, 
-    .form-group select, 
-    .form-group textarea {
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: var(--dark-color); font-size: 0.9rem; }
+    .form-group input, .form-group select, .form-group textarea {
       width: 100%;
       padding: 12px 14px;
       border: 1px solid var(--border-color);
@@ -495,45 +299,16 @@
       transition: all 0.2s;
       background: white;
     }
-
-    .form-group input:focus, 
-    .form-group select:focus, 
-    .form-group textarea:focus {
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
+    .form-group input:disabled { background-color: #f1f5f9; cursor: not-allowed; color: var(--text-muted); }
+    .form-group small { display: block; margin-top: 6px; font-size: 0.8em; color: var(--text-muted); }
+    .form-actions { text-align: right; margin-top: 1.5rem; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+    textarea { resize: vertical; min-height: 100px; }
 
-    .form-group input:disabled {
-      background-color: #f1f5f9;
-      cursor: not-allowed;
-      color: var(--text-muted);
-    }
-
-    .form-group small {
-      display: block;
-      margin-top: 6px;
-      font-size: 0.8em;
-      color: var(--text-muted);
-    }
-
-    .form-actions {
-      text-align: right;
-      margin-top: 1.5rem;
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    /* ============================================
-       NOTIFICATION
-       ============================================ */
     .notification {
       padding: 16px 20px;
       margin: 1rem 0;
@@ -543,22 +318,9 @@
       animation: slideIn 0.3s;
       border-left: 4px solid;
     }
+    .notification.success { background-color: #d1fae5; color: #065f46; border-left-color: var(--success-color); }
+    .notification.error { background-color: #fee2e2; color: #991b1b; border-left-color: var(--danger-color); }
 
-    .notification.success { 
-      background-color: #d1fae5; 
-      color: #065f46; 
-      border-left-color: var(--success-color);
-    }
-
-    .notification.error { 
-      background-color: #fee2e2; 
-      color: #991b1b; 
-      border-left-color: var(--danger-color);
-    }
-
-    /* ============================================
-       SPINNER
-       ============================================ */
     .spinner {
       border: 3px solid #f3f3f3;
       border-top: 3px solid var(--primary-color);
@@ -570,9 +332,6 @@
       display: none;
     }
 
-    /* ============================================
-       BOTTOM NAVIGATION (Mobile)
-       ============================================ */
     .bottom-nav {
       display: none;
       position: fixed;
@@ -609,25 +368,10 @@
       transition: all 0.2s;
       border-radius: var(--border-radius-sm);
     }
+    .bottom-nav-item:hover { background: #f1f5f9; color: var(--primary-color); }
+    .bottom-nav-item.active { color: var(--primary-color); background: rgba(79, 70, 229, 0.1); }
+    .bottom-nav-item .nav-icon { font-size: 1.5rem; line-height: 1; }
 
-    .bottom-nav-item:hover {
-      background: #f1f5f9;
-      color: var(--primary-color);
-    }
-
-    .bottom-nav-item.active {
-      color: var(--primary-color);
-      background: rgba(79, 70, 229, 0.1);
-    }
-
-    .bottom-nav-item .nav-icon {
-      font-size: 1.5rem;
-      line-height: 1;
-    }
-
-    /* ============================================
-       PIN MODAL
-       ============================================ */
     .pin-modal {
       display: none;
       position: fixed;
@@ -655,18 +399,8 @@
       text-align: center;
     }
 
-    .pin-modal-content h2 {
-      margin: 0 0 0.5rem 0;
-      color: var(--dark-color);
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .pin-modal-content p {
-      margin: 0 0 1.5rem 0;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
+    .pin-modal-content h2 { margin: 0 0 0.5rem 0; color: var(--dark-color); font-size: 1.5rem; font-weight: 700; }
+    .pin-modal-content p { margin: 0 0 1.5rem 0; color: var(--text-muted); font-size: 0.95rem; }
 
     .pin-input-container {
       display: flex;
@@ -687,238 +421,58 @@
       transition: all 0.2s;
       background: white;
     }
-
     .pin-digit:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
+    .pin-digit.filled { border-color: var(--primary-color); background: rgba(79, 70, 229, 0.05); }
+    .pin-error { border-color: var(--danger-color) !important; animation: shake 0.4s; }
 
-    .pin-digit.filled {
-      border-color: var(--primary-color);
-      background: rgba(79, 70, 229, 0.05);
-    }
+    .pin-actions { display: flex; gap: 10px; justify-content: center; }
+    .pin-actions .btn { flex: 1; max-width: 150px; }
 
-    .pin-error {
-      border-color: var(--danger-color) !important;
-      animation: shake 0.4s;
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
-    .pin-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .pin-actions .btn {
-      flex: 1;
-      max-width: 150px;
-    }
-
-    /* ============================================
-       ANIMATIONS
-       ============================================ */
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideIn {
-      from { 
-        transform: translateY(-30px); 
-        opacity: 0; 
-      }
-      to { 
-        transform: translateY(0); 
-        opacity: 1; 
-      }
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      75% { transform: translateX(10px); }
-    }
-
-    /* ============================================
-       RESPONSIVE DESIGN
-       ============================================ */
-    @media screen and (max-width: 1024px) {
-      .container {
-        margin: 1rem;
-        padding: 1.5rem;
-      }
-    }
+    @media screen and (max-width: 1024px) { .container { margin: 1rem; padding: 1.5rem; } }
 
     @media screen and (max-width: 768px) {
-      body {
-        padding-bottom: 80px;
-      }
-
-      .container {
-        margin: 0.75rem;
-        margin-bottom: 1rem;
-        padding: 1rem;
-        padding-bottom: 1.5rem;
-      }
-
-      header h1 {
-        font-size: 1.4rem;
-      }
-
-      header p {
-        font-size: 0.85rem;
-      }
-
-      .button-group {
-        display: none;
-      }
-
-      .search-container {
-        padding: 1rem;
-      }
-
-      .search-input-wrapper {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      .search-input {
-        width: 100%;
-      }
-
-      .search-btn {
-        width: 100%;
-      }
-
-      .filter-controls {
-        padding: 1rem;
-      }
-
-      .form-group-inline {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.5rem;
-      }
-
-      .filter-controls .btn {
-        width: 100%;
-        margin-top: 0.5rem;
-      }
-
-      .pagination-wrapper {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 1rem;
-      }
-
-      #data-table thead {
-        display: none;
-      }
-
-      #data-table, 
-      #data-table tbody, 
-      #data-table tr, 
-      #data-table td {
-        display: block;
-        width: 100% !important;
-      }
-
-      #data-table tr {
-        margin-bottom: 1rem;
-        border: 1px solid var(--border-color);
-        border-radius: var(--border-radius);
-        padding: 12px;
-        background: white;
-        box-shadow: var(--box-shadow-sm);
-      }
-
-      #data-table td {
-        border: none;
-        border-bottom: 1px solid var(--border-color);
-        position: relative;
-        padding: 10px 10px 10px 45%;
-        text-align: left;
-        white-space: normal;
-        font-size: 0.9rem;
-      }
-
-      #data-table td.action-buttons {
-        padding: 12px 10px;
-        text-align: center;
-      }
-
-      #data-table td.action-buttons:before {
-        content: "Aksi:";
-        position: static;
-        width: auto;
-        padding-right: 0;
-        display: block;
-        margin-bottom: 8px;
-        text-align: center;
-      }
-
-      .bottom-nav {
-        display: block;
-      }
-
-      .modal-content {
-        margin: 10% auto;
-        padding: 1.5rem;
-        width: 95%;
-      }
-
-      .form-group input, 
-      .form-group select, 
-      .form-group textarea {
-        font-size: 1rem;
-        padding: 14px;
-      }
-
-      .form-actions {
-        flex-direction: column;
-      }
-
-      .form-actions .btn {
-        width: 100%;
-      }
+      body { padding-bottom: 80px; }
+      .container { margin: 0.75rem; margin-bottom: 1rem; padding: 1rem; padding-bottom: 1.5rem; }
+      header h1 { font-size: 1.4rem; }
+      header p { font-size: 0.85rem; }
+      .button-group { display: none; }
+      .search-container { padding: 1rem; }
+      .search-input-wrapper { flex-direction: column; gap: 0.5rem; }
+      .search-input { width: 100%; }
+      .search-btn { width: 100%; }
+      .filter-controls { padding: 1rem; }
+      .form-group-inline { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+      .filter-controls .btn { width: 100%; margin-top: 0.5rem; }
+      .pagination-wrapper { flex-direction: column; align-items: center; text-align: center; padding: 1rem; }
+      #data-table thead { display: none; }
+      #data-table, #data-table tbody, #data-table tr, #data-table td { display: block; width: 100% !important; }
+      #data-table tr { margin-bottom: 1rem; border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 12px; background: white; box-shadow: var(--box-shadow-sm); }
+      #data-table td { border: none; border-bottom: 1px solid var(--border-color); position: relative; padding: 10px 10px 10px 45%; text-align: left; white-space: normal; font-size: 0.9rem; }
+      #data-table td.action-buttons { padding: 12px 10px; text-align: center; }
+      #data-table td.action-buttons:before { content: "Aksi:"; position: static; width: auto; padding-right: 0; display: block; margin-bottom: 8px; text-align: center; }
+      .bottom-nav { display: block; }
+      .modal-content { margin: 10% auto; padding: 1.5rem; width: 95%; }
+      .form-group input, .form-group select, .form-group textarea { font-size: 1rem; padding: 14px; }
+      .form-actions { flex-direction: column; }
+      .form-actions .btn { width: 100%; }
     }
 
     @media screen and (max-width: 480px) {
-      .container {
-        margin: 0.5rem;
-        padding: 0.75rem;
-      }
-
-      header h1 {
-        font-size: 1.2rem;
-      }
-
-      .pin-modal-content {
-        margin: 30% auto;
-        padding: 2rem 1.5rem;
-      }
-
-      .pin-digit {
-        width: 45px;
-        height: 55px;
-        font-size: 1.3rem;
-      }
-
-      .bottom-nav-item {
-        padding: 6px 8px;
-        font-size: 0.7rem;
-      }
-
-      .bottom-nav-item .nav-icon {
-        font-size: 1.3rem;
-      }
+      .container { margin: 0.5rem; padding: 0.75rem; }
+      header h1 { font-size: 1.2rem; }
+      .pin-modal-content { margin: 30% auto; padding: 2rem 1.5rem; }
+      .pin-digit { width: 45px; height: 55px; font-size: 1.3rem; }
+      .bottom-nav-item { padding: 6px 8px; font-size: 0.7rem; }
+      .bottom-nav-item .nav-icon { font-size: 1.3rem; }
     }
   </style>
 </head>
@@ -930,7 +484,6 @@
     </header>
 
     <main>
-      <!-- Top Button Group (Desktop) -->
       <div class="button-group">
         <button id="add-btn" class="btn btn-primary">➕ Tambah Penyewaan Baru</button>
         <button id="broadcast-btn" class="btn btn-info">📢 Broadcast Pesan</button>
@@ -939,7 +492,6 @@
 
       <div id="notification" class="notification"></div>
 
-      <!-- Search Bar -->
       <div class="search-container">
         <h3>Cari Data</h3>
         <div class="search-input-wrapper">
@@ -948,7 +500,6 @@
         </div>
       </div>
 
-      <!-- Filter Data -->
       <div class="filter-controls">
         <h3>Filter Data</h3>
         <div class="form-group-inline">
@@ -977,9 +528,7 @@
               <th>Aksi</th>
             </tr>
           </thead>
-          <tbody id="table-body">
-            <!-- Data will be loaded here -->
-          </tbody>
+          <tbody id="table-body"></tbody>
           <tfoot>
             <tr>
               <td colspan="8">
@@ -1000,44 +549,37 @@
     </main>
   </div>
 
-  <!-- Bottom Navigation (Mobile) -->
   <nav class="bottom-nav">
     <div class="bottom-nav-items">
       <button class="bottom-nav-item active" data-action="home">
-        <span class="nav-icon">🏠</span>
-        <span>Home</span>
+        <span class="nav-icon">🏠</span><span>Home</span>
       </button>
       <button class="bottom-nav-item" data-action="add">
-        <span class="nav-icon">➕</span>
-        <span>Tambah</span>
+        <span class="nav-icon">➕</span><span>Tambah</span>
       </button>
       <button class="bottom-nav-item" data-action="search">
-        <span class="nav-icon">🔍</span>
-        <span>Cari</span>
+        <span class="nav-icon">🔍</span><span>Cari</span>
       </button>
       <button class="bottom-nav-item" data-action="broadcast">
-        <span class="nav-icon">📢</span>
-        <span>Broadcast</span>
+        <span class="nav-icon">📢</span><span>Broadcast</span>
       </button>
       <button class="bottom-nav-item" data-action="check">
-        <span class="nav-icon">📧</span>
-        <span>Cek</span>
+        <span class="nav-icon">📧</span><span>Cek</span>
       </button>
     </div>
   </nav>
 
-  <!-- PIN Modal (Login/Verify) -->
   <div id="pin-modal" class="pin-modal">
     <div class="pin-modal-content">
-      <h2 id="pin-modal-title">🔐 Keamanan</h2>
-      <p id="pin-modal-subtitle">Masukkan PIN 6 digit untuk melanjutkan</p>
+      <h2>🔐 Keamanan</h2>
+      <p>Masukkan PIN 6 digit untuk melanjutkan</p>
       <div class="pin-input-container">
-        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="0">
-        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="1">
-        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="2">
-        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="3">
-        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="4">
-        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="5">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="0" autocomplete="one-time-code">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="1" autocomplete="one-time-code">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="2" autocomplete="one-time-code">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="3" autocomplete="one-time-code">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="4" autocomplete="one-time-code">
+        <input type="tel" class="pin-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="5" autocomplete="one-time-code">
       </div>
       <div class="pin-actions">
         <button id="cancel-pin-btn" class="btn btn-secondary">Batal</button>
@@ -1046,44 +588,6 @@
     </div>
   </div>
 
-  <!-- PIN Setup Modal (Jika belum ada PIN) -->
-  <div id="pin-setup-modal" class="pin-modal">
-    <div class="pin-modal-content">
-      <h2>🔐 Setup PIN Keamanan</h2>
-      <p>Buat PIN 6 digit pertama kali untuk keamanan aplikasi</p>
-      <div id="setup-step-1">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Langkah 1: Masukkan PIN baru</p>
-        <div class="pin-input-container">
-          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="0">
-          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="1">
-          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="2">
-          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="3">
-          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="4">
-          <input type="tel" class="pin-digit-setup" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="5">
-        </div>
-        <div class="pin-actions">
-          <button id="setup-next-btn" class="btn btn-primary" style="width: 100%;">Lanjut →</button>
-        </div>
-      </div>
-      <div id="setup-step-2" style="display: none;">
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Langkah 2: Konfirmasi PIN</p>
-        <div class="pin-input-container">
-          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="0">
-          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="1">
-          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="2">
-          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="3">
-          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="4">
-          <input type="tel" class="pin-digit-confirm" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="5">
-        </div>
-        <div class="pin-actions">
-          <button id="setup-back-btn" class="btn btn-secondary">← Kembali</button>
-          <button id="setup-confirm-btn" class="btn btn-success">✅ Simpan PIN</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Form Modal -->
   <div id="form-modal" class="modal">
     <div class="modal-content">
       <span class="close-btn">&times;</span>
@@ -1131,11 +635,10 @@
     </div>
   </div>
 
-  <!-- Delete Modal -->
   <div id="delete-modal" class="modal">
     <div class="modal-content">
       <h2>⚠️ Konfirmasi Hapus</h2>
-      <p>Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.</p>
+      <p>Apakah Anda yakin ingin menghapus data ini?</p>
       <div class="form-actions">
         <button id="confirm-delete-btn" class="btn btn-danger">🗑️ Hapus</button>
         <button class="btn btn-secondary cancel-btn">Batal</button>
@@ -1143,7 +646,6 @@
     </div>
   </div>
 
-  <!-- Renew Modal -->
   <div id="renew-modal" class="modal">
     <div class="modal-content">
       <h2>🔄 Perpanjang Masa Aktif</h2>
@@ -1161,11 +663,10 @@
     </div>
   </div>
 
-  <!-- Broadcast Modal -->
   <div id="broadcast-modal" class="modal">
     <div class="modal-content">
       <h2>📢 Kirim Broadcast ke Semua Member</h2>
-      <p>Masukkan pesan yang akan dikirim ke semua member yang memiliki alamat email.</p>
+      <p>Masukkan pesan yang akan dikirim ke semua member.</p>
       <form id="broadcast-form">
         <div class="form-group">
           <label for="broadcast-message-text">Pesan Broadcast</label>
@@ -1184,20 +685,7 @@
     // KONFIGURASI
     // ============================================
     const PAGE_LIMIT = 10;
-    const STORAGE_KEY = 'vpsManager_PIN';
-
-    // Helper untuk mengambil PIN dari localStorage
-    function getStoredPIN() {
-      return localStorage.getItem(STORAGE_KEY) || null;
-    }
-
-    // Helper untuk menyimpan PIN ke localStorage
-    function setStoredPIN(pin) {
-      localStorage.setItem(STORAGE_KEY, pin);
-    }
-
-    // Ambil PIN saat startup
-    let CORRECT_PIN = getStoredPIN();
+    let storedPin = null;
 
     // ============================================
     // STATE VARIABLES
@@ -1210,9 +698,6 @@
     let itemToDeleteId = null;
     let itemToRenewId = null;
     let pendingAction = null;
-    let appLocked = true; // App dimulai dalam status terkunci
-    let setupStep = 1; // Step untuk PIN setup: 1 = input, 2 = confirm
-    let tmpSetupPIN = ''; // Temporary storage untuk PIN yang dibuat di setup
 
     // ============================================
     // DOM ELEMENTS
@@ -1243,16 +728,7 @@
       elements.pinDigits = document.querySelectorAll('.pin-digit');
       elements.verifyPinBtn = document.getElementById('verify-pin-btn');
       elements.cancelPinBtn = document.getElementById('cancel-pin-btn');
-      elements.pinModalTitle = document.getElementById('pin-modal-title');
-      elements.pinModalSubtitle = document.getElementById('pin-modal-subtitle');
-      elements.pinSetupModal = document.getElementById('pin-setup-modal');
-      elements.pinDigitsSetup = document.querySelectorAll('.pin-digit-setup');
-      elements.pinDigitsConfirm = document.querySelectorAll('.pin-digit-confirm');
-      elements.setupNextBtn = document.getElementById('setup-next-btn');
-      elements.setupBackBtn = document.getElementById('setup-back-btn');
-      elements.setupConfirmBtn = document.getElementById('setup-confirm-btn');
-      elements.setupStep1 = document.getElementById('setup-step-1');
-      elements.setupStep2 = document.getElementById('setup-step-2');
+      elements.filterStartDateInput = document.getElementById('filter-start-date');
       elements.filterEndDateInput = document.getElementById('filter-end-date');
       elements.applyFilterBtn = document.getElementById('apply-filter-btn');
       elements.resetFilterBtn = document.getElementById('reset-filter-btn');
@@ -1269,29 +745,35 @@
     // ============================================
     document.addEventListener('DOMContentLoaded', () => {
       initElements();
-      
-      // Cek apakah PIN sudah diatur
-      if (!CORRECT_PIN) {
-        // PIN belum ada, tampilkan setup modal
-        appLocked = true;
-        showPINSetupModal();
-      } else {
-        // PIN sudah ada, tampilkan login modal
-        appLocked = true;
-        showPINLoginModal();
-      }
-      
       initPINHandler();
-      initPINSetupHandler();
-      initEventListeners();
       initBottomNav();
       initSearch();
+      initEventListeners();
+      loadPinAndFetchData();
     });
 
+    /**
+     * Load PIN dari server sebelum fetch data
+     */
+    function loadPinAndFetchData() {
+      google.script.run
+        .withSuccessHandler((pin) => {
+          storedPin = pin;
+          console.log('✅ PIN loaded from server');
+          fetchData();
+        })
+        .withFailureHandler((error) => {
+          console.error('❌ Error loading PIN:', error);
+          storedPin = '123456'; // Fallback
+          fetchData();
+        })
+        .getStoredPin();
+    }
+
     function initEventListeners() {
-      elements.addBtn.addEventListener('click', () => requirePIN(() => showModal('add')));
-      elements.broadcastBtn.addEventListener('click', () => requirePIN(() => showBroadcastModal()));
-      elements.checkExpiredBtn.addEventListener('click', () => requirePIN(() => handleCheckExpired()));
+      elements.addBtn.addEventListener('click', () => showModal('add'));
+      elements.broadcastBtn.addEventListener('click', showBroadcastModal);
+      elements.checkExpiredBtn.addEventListener('click', handleCheckExpired);
       elements.dataForm.addEventListener('submit', handleFormSubmit);
       elements.renewForm.addEventListener('submit', handleRenewSubmit);
       elements.broadcastForm.addEventListener('submit', handleBroadcastSubmit);
@@ -1302,12 +784,8 @@
       elements.nextPageBtn.addEventListener('click', () => goToPage(currentPage + 1));
 
       elements.tipeAkunSelect.addEventListener('change', () => {
-        if (elements.tipeAkunSelect.value === 'limit') {
-          elements.masaAktifInput.disabled = false;
-        } else {
-          elements.masaAktifInput.value = '';
-          elements.masaAktifInput.disabled = true;
-        }
+        elements.masaAktifInput.disabled = elements.tipeAkunSelect.value !== 'limit';
+        if (elements.tipeAkunSelect.value !== 'limit') elements.masaAktifInput.value = '';
       });
 
       elements.closeBtns.forEach(btn => {
@@ -1321,31 +799,29 @@
 
       elements.tableBody.addEventListener('click', (e) => {
         const target = e.target;
-        if (target.classList.contains('edit-btn')) {
-          showModal('edit', target.getAttribute('data-id'));
-        } else if (target.classList.contains('delete-btn')) {
-          showDeleteConfirmation(target.getAttribute('data-id'));
-        } else if (target.classList.contains('renew-btn')) {
-          showRenewalModal(target.getAttribute('data-id'));
-        }
+        if (target.classList.contains('edit-btn')) showModal('edit', target.getAttribute('data-id'));
+        else if (target.classList.contains('delete-btn')) showDeleteConfirmation(target.getAttribute('data-id'));
+        else if (target.classList.contains('renew-btn')) showRenewalModal(target.getAttribute('data-id'));
       });
     }
 
     // ============================================
-    // SEARCH FUNCTIONALITY
+    // SEARCH
     // ============================================
     function initSearch() {
       elements.searchBtn.addEventListener('click', searchData);
-      elements.searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') searchData();
+      elements.searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') searchData(); });
+      elements.searchInput.addEventListener('input', () => {
+        if (elements.searchInput.value === '') {
+          currentSearchQuery = '';
+          fetchData();
+        }
       });
     }
 
     function searchData() {
       showSpinner();
       currentSearchQuery = elements.searchInput.value.trim().toLowerCase();
-      currentPage = 1; // Reset ke halaman 1 saat search
-      
       google.script.run
         .withSuccessHandler((response) => {
           const filteredData = filterDataBySearch(response.data);
@@ -1377,29 +853,18 @@
           item.classList.add('active');
           
           switch(action) {
-            case 'home':
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              break;
-            case 'add':
-              requirePIN(() => showModal('add'));
-              break;
-            case 'search':
-              elements.searchInput.focus();
-              elements.searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              break;
-            case 'broadcast':
-              requirePIN(() => showBroadcastModal());
-              break;
-            case 'check':
-              requirePIN(() => handleCheckExpired());
-              break;
+            case 'home': window.scrollTo({ top: 0, behavior: 'smooth' }); break;
+            case 'add': requirePIN(() => showModal('add')); break;
+            case 'search': elements.searchInput.focus(); elements.searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); break;
+            case 'broadcast': requirePIN(() => showBroadcastModal()); break;
+            case 'check': requirePIN(() => handleCheckExpired()); break;
           }
         });
       });
     }
 
     // ============================================
-    // PIN HANDLER
+    // PIN HANDLER - FIXED
     // ============================================
     function initPINHandler() {
       elements.pinDigits.forEach((digit, index) => {
@@ -1418,9 +883,9 @@
         
         digit.addEventListener('keydown', (e) => {
           if (e.key === 'Backspace' && !e.target.value && index > 0) {
-            elements.pinDigits[index - 1].focus();
             elements.pinDigits[index - 1].value = '';
             elements.pinDigits[index - 1].classList.remove('filled');
+            elements.pinDigits[index - 1].focus();
           }
         });
         
@@ -1432,52 +897,79 @@
         hidePINModal();
         pendingAction = null;
       });
+      
+      // Close modal when clicking outside
+      elements.pinModal.addEventListener('click', (e) => {
+        if (e.target === elements.pinModal) {
+          hidePINModal();
+          pendingAction = null;
+        }
+      });
     }
 
     function isPINComplete() {
       return Array.from(elements.pinDigits).every(d => d.value !== '');
     }
 
+    /**
+     * Verifikasi PIN dengan server
+     */
     function verifyPIN() {
       const enteredPIN = Array.from(elements.pinDigits).map(d => d.value).join('');
       
-      if (enteredPIN === CORRECT_PIN) {
-        if (appLocked) {
-          // Login saat aplikasi dimulai
-          appLocked = false;
-          hidePINModal();
-          showNotification('✅ Login berhasil!', 'success');
-          fetchData();
-          initPINHandler(); // Re-init handler supaya modal berfungsi untuk aksi sensitif
-        } else {
-          // Verifikasi untuk aksi sensitif
-          hidePINModal();
-          showNotification('PIN benar! ✅', 'success');
-          if (pendingAction) {
-            pendingAction();
-            pendingAction = null;
-          }
-        }
-      } else {
-        elements.pinDigits.forEach(d => {
-          d.classList.add('pin-error');
-          d.value = '';
-          d.classList.remove('filled');
-        });
-        setTimeout(() => {
-          elements.pinDigits.forEach(d => d.classList.remove('pin-error'));
-          elements.pinDigits[0].focus();
-        }, 400);
-        showNotification('PIN salah! Silakan coba lagi.', 'error');
+      if (enteredPIN.length !== 6) {
+        showNotification('PIN harus 6 digit!', 'error');
+        return;
       }
+
+      // Verifikasi ke server
+      google.script.run
+        .withSuccessHandler((response) => {
+          if (response.success) {
+            hidePINModal();
+            showNotification('✅ PIN benar!', 'success');
+            if (pendingAction) {
+              pendingAction();
+              pendingAction = null;
+            }
+          } else {
+            showPINError();
+          }
+        })
+        .withFailureHandler((error) => {
+          console.error('PIN verification error:', error);
+          // Fallback: verify locally if server fails
+          if (enteredPIN === storedPin) {
+            hidePINModal();
+            showNotification('✅ PIN benar!', 'success');
+            if (pendingAction) {
+              pendingAction();
+              pendingAction = null;
+            }
+          } else {
+            showPINError();
+          }
+        })
+        .verifyPin(enteredPIN);
+    }
+
+    function showPINError() {
+      elements.pinDigits.forEach(d => {
+        d.classList.add('pin-error');
+        d.value = '';
+        d.classList.remove('filled');
+      });
+      setTimeout(() => {
+        elements.pinDigits.forEach(d => d.classList.remove('pin-error'));
+        elements.pinDigits[0].focus();
+      }, 400);
+      showNotification('❌ PIN salah! Silakan coba lagi.', 'error');
     }
 
     function showPINModal() {
-      elements.pinModalTitle.textContent = '🔐 Keamanan';
-      elements.pinModalSubtitle.textContent = 'Masukkan PIN 6 digit untuk melanjutkan aksi ini';
       clearPIN();
       elements.pinModal.style.display = 'block';
-      elements.pinDigits[0].focus();
+      setTimeout(() => elements.pinDigits[0].focus(), 100);
     }
 
     function hidePINModal() {
@@ -1498,159 +990,6 @@
     }
 
     // ============================================
-    // PIN LOGIN & SETUP MODALS
-    // ============================================
-    function showPINLoginModal() {
-      elements.pinModalTitle.textContent = '🔐 Keamanan';
-      elements.pinModalSubtitle.textContent = 'Masukkan PIN 6 digit untuk melanjutkan';
-      clearPIN();
-      elements.pinModal.style.display = 'block';
-      elements.pinDigits[0].focus();
-    }
-
-    function showPINSetupModal() {
-      elements.pinSetupModal.style.display = 'block';
-      elements.setupStep1.style.display = 'block';
-      elements.setupStep2.style.display = 'none';
-      setupStep = 1;
-      tmpSetupPIN = '';
-      clearPINSetup();
-      elements.pinDigitsSetup[0].focus();
-    }
-
-    function hidePINSetupModal() {
-      elements.pinSetupModal.style.display = 'none';
-      setupStep = 1;
-      tmpSetupPIN = '';
-      clearPINSetup();
-      clearPINConfirm();
-    }
-
-    function clearPINSetup() {
-      elements.pinDigitsSetup.forEach(d => {
-        d.value = '';
-        d.classList.remove('filled', 'pin-error');
-      });
-    }
-
-    function clearPINConfirm() {
-      elements.pinDigitsConfirm.forEach(d => {
-        d.value = '';
-        d.classList.remove('filled', 'pin-error');
-      });
-    }
-
-    // ============================================
-    // PIN SETUP HANDLER
-    // ============================================
-    function initPINSetupHandler() {
-      // Setup Step 1: Input PIN baru
-      elements.pinDigitsSetup.forEach((digit, index) => {
-        digit.addEventListener('input', (e) => {
-          const value = e.target.value;
-          if (!/^\d$/.test(value)) {
-            e.target.value = '';
-            return;
-          }
-          e.target.classList.add('filled');
-          if (index < elements.pinDigitsSetup.length - 1) {
-            elements.pinDigitsSetup[index + 1].focus();
-          }
-          if (isPINSetupComplete()) {
-            // Auto lanjut ke step 2
-            elements.setupNextBtn.click();
-          }
-        });
-        
-        digit.addEventListener('keydown', (e) => {
-          if (e.key === 'Backspace' && !e.target.value && index > 0) {
-            elements.pinDigitsSetup[index - 1].focus();
-            elements.pinDigitsSetup[index - 1].value = '';
-            elements.pinDigitsSetup[index - 1].classList.remove('filled');
-          }
-        });
-        
-        digit.addEventListener('focus', (e) => e.target.select());
-      });
-
-      // Setup Step 2: Confirm PIN
-      elements.pinDigitsConfirm.forEach((digit, index) => {
-        digit.addEventListener('input', (e) => {
-          const value = e.target.value;
-          if (!/^\d$/.test(value)) {
-            e.target.value = '';
-            return;
-          }
-          e.target.classList.add('filled');
-          if (index < elements.pinDigitsConfirm.length - 1) {
-            elements.pinDigitsConfirm[index + 1].focus();
-          }
-        });
-        
-        digit.addEventListener('keydown', (e) => {
-          if (e.key === 'Backspace' && !e.target.value && index > 0) {
-            elements.pinDigitsConfirm[index - 1].focus();
-            elements.pinDigitsConfirm[index - 1].value = '';
-            elements.pinDigitsConfirm[index - 1].classList.remove('filled');
-          }
-        });
-        
-        digit.addEventListener('focus', (e) => e.target.select());
-      });
-
-      // Button handlers
-      elements.setupNextBtn.addEventListener('click', () => {
-        const setupPIN = Array.from(elements.pinDigitsSetup).map(d => d.value).join('');
-        if (setupPIN.length !== 6) {
-          showNotification('PIN harus 6 digit!', 'error');
-          return;
-        }
-        tmpSetupPIN = setupPIN;
-        setupStep = 2;
-        elements.setupStep1.style.display = 'none';
-        elements.setupStep2.style.display = 'block';
-        clearPINConfirm();
-        elements.pinDigitsConfirm[0].focus();
-      });
-
-      elements.setupBackBtn.addEventListener('click', () => {
-        setupStep = 1;
-        elements.setupStep1.style.display = 'block';
-        elements.setupStep2.style.display = 'none';
-        clearPINConfirm();
-        elements.pinDigitsSetup[0].focus();
-      });
-
-      elements.setupConfirmBtn.addEventListener('click', () => {
-        const confirmPIN = Array.from(elements.pinDigitsConfirm).map(d => d.value).join('');
-        if (confirmPIN !== tmpSetupPIN) {
-          showNotification('PIN tidak cocok! Silakan coba lagi.', 'error');
-          elements.pinDigitsConfirm.forEach(d => {
-            d.classList.add('pin-error');
-            d.value = '';
-            d.classList.remove('filled');
-          });
-          setTimeout(() => {
-            elements.pinDigitsConfirm.forEach(d => d.classList.remove('pin-error'));
-            elements.pinDigitsConfirm[0].focus();
-          }, 400);
-          return;
-        }
-        // PIN cocok, simpan ke localStorage dan ubah CORRECT_PIN
-        setStoredPIN(tmpSetupPIN);
-        CORRECT_PIN = tmpSetupPIN;
-        hidePINSetupModal();
-        appLocked = false;
-        showNotification('✅ PIN berhasil dibuat! Aplikasi sekarang terbuka.', 'success');
-        fetchData();
-      });
-    }
-
-    function isPINSetupComplete() {
-      return Array.from(elements.pinDigitsSetup).every(d => d.value !== '');
-    }
-
-    // ============================================
     // DATA FETCHING & RENDERING
     // ============================================
     function fetchData() {
@@ -1663,9 +1002,7 @@
 
     function renderTableAndPagination(response) {
       let data = response.data;
-      if (currentSearchQuery) {
-        data = filterDataBySearch(data);
-      }
+      if (currentSearchQuery) data = filterDataBySearch(data);
       renderTable(data);
       renderPagination(response.pagination);
       hideSpinner();
@@ -1675,7 +1012,7 @@
       elements.tableBody.innerHTML = '';
       if (data.length === 0) {
         const message = currentSearchQuery 
-          ? `Tidak ditemukan data untuk pencarian "${currentSearchQuery}".`
+          ? `Tidak ditemukan data untuk "${currentSearchQuery}".`
           : 'Tidak ada data penyewaan.';
         elements.tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center;">${message}</td></tr>`;
         return;
@@ -1685,9 +1022,6 @@
         const renewButton = item.tipeAkun === 'limit'
           ? `<button class="btn btn-renew renew-btn" data-id="${item.id}">🔄</button>`
           : '';
-
-        // Escape data item untuk data attribute
-        const itemDataAttr = JSON.stringify(item).replace(/"/g, '&quot;');
 
         const row = `
           <tr>
@@ -1699,7 +1033,7 @@
             <td data-label="RAM">${item.ram || '-'}</td>
             <td data-label="Pesan">${item.pesan ? (item.pesan.substring(0, 30) + (item.pesan.length > 30 ? '...' : '')) : '-'}</td>
             <td data-label="Aksi" class="action-buttons">
-              <button class="btn btn-warning edit-btn" data-id="${item.id}" data-item="${itemDataAttr}">✏️</button>
+              <button class="btn btn-warning edit-btn" data-id="${item.id}">✏️</button>
               ${renewButton}
               <button class="btn btn-danger delete-btn" data-id="${item.id}">🗑️</button>
             </td>
@@ -1729,9 +1063,6 @@
       }
     }
 
-    // ============================================
-    // FILTER & PAGINATION
-    // ============================================
     function applyFilters() {
       currentStartDate = elements.filterStartDateInput.value || null;
       currentEndDate = elements.filterEndDateInput.value || null;
@@ -1748,11 +1079,7 @@
       fetchData();
     }
 
-    function goToPage(page) {
-      if (page < 1) return;
-      currentPage = page;
-      fetchData();
-    }
+    function goToPage(page) { if (page < 1) return; currentPage = page; fetchData(); }
 
     // ============================================
     // FORM HANDLERS
@@ -1808,18 +1135,17 @@
       
       if (type === 'edit') {
         elements.modalTitle.textContent = 'Edit Data Penyewaan';
-        const editBtn = document.querySelector(`.edit-btn[data-id="${id}"]`);
-        const itemData = JSON.parse(editBtn.getAttribute('data-item'));
-        
+        const row = document.querySelector(`.edit-btn[data-id="${id}"]`).closest('tr');
+        if (!row) return;
         document.getElementById('data-id').value = id;
-        document.getElementById('username').value = itemData.username;
-        document.getElementById('tipeAkun').value = itemData.tipeAkun;
+        document.getElementById('username').value = row.cells[0].textContent;
+        document.getElementById('tipeAkun').value = row.cells[1].textContent.trim().replace('#', '');
         document.getElementById('tipeAkun').disabled = true;
         document.getElementById('masaAktifHari').disabled = true;
-        document.getElementById('ipVps').value = itemData.ipVps;
-        document.getElementById('emailMember').value = itemData.emailMember || '';
-        document.getElementById('ram').value = itemData.ram || '';
-        document.getElementById('pesan').value = itemData.pesan || '';
+        document.getElementById('ipVps').value = row.cells[3].textContent;
+        document.getElementById('emailMember').value = row.cells[4].textContent || '';
+        document.getElementById('ram').value = row.cells[5].textContent || '';
+        document.getElementById('pesan').value = row.cells[6].textContent.trim() || '';
         currentEditId = id;
       } else {
         elements.modalTitle.textContent = 'Tambah Penyewaan Baru';
@@ -1844,9 +1170,7 @@
       elements.broadcastModal.style.display = 'block';
     }
 
-    function hideModal(modal) {
-      modal.style.display = 'none';
-    }
+    function hideModal(modal) { modal.style.display = 'none'; }
 
     function confirmDelete() {
       if (itemToDeleteId) {
@@ -1868,9 +1192,7 @@
       elements.notification.textContent = message;
       elements.notification.className = `notification ${type}`;
       elements.notification.style.display = 'block';
-      setTimeout(() => {
-        elements.notification.style.display = 'none';
-      }, 4000);
+      setTimeout(() => { elements.notification.style.display = 'none'; }, 4000);
     }
 
     function showSpinner() {
@@ -1893,7 +1215,7 @@
     }
 
     function onFailure(error) {
-      showNotification('Terjadi kesalahan: ' + error.message, 'error');
+      showNotification('❌ Error: ' + error.message, 'error');
       hideSpinner();
     }
   </script>

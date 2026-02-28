@@ -8,6 +8,7 @@
  * - Broadcast email ke member
  * - Notifikasi kadaluarsa otomatis
  * - Integrasi GitHub untuk sync data
+ * - PIN Security dengan penyimpanan di PropertiesService
  * ============================================================================
  */
 
@@ -17,6 +18,10 @@ const REPO_NAME = 'ipvps';
 const FILE_PATH = 'main/ip';
 const COMMIT_MESSAGE = 'Update VPS list from Google Spreadsheet';
 
+// --- KONFIGURASI PIN ---
+const DEFAULT_PIN = '123456';
+const PIN_PROPERTY_KEY = 'VPS_APP_PIN';
+
 /**
  * Menampilkan halaman web
  */
@@ -25,6 +30,66 @@ function doGet(e) {
     .setTitle('Manajemen Penyewaan VPS')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+/**
+ * Mendapatkan PIN yang tersimpan
+ * @returns {string} PIN saat ini
+ */
+function getStoredPin() {
+  const props = PropertiesService.getScriptProperties();
+  let pin = props.getProperty(PIN_PROPERTY_KEY);
+  
+  if (!pin) {
+    // Jika PIN belum diset, gunakan default
+    pin = DEFAULT_PIN;
+    props.setProperty(PIN_PROPERTY_KEY, pin);
+  }
+  
+  return pin;
+}
+
+/**
+ * Setup/Update PIN melalui UI
+ */
+function setupPin() {
+  const ui = SpreadsheetApp.getUi();
+  const response = ui.prompt(
+    'Setup PIN Keamanan',
+    'Masukkan PIN 6 digit baru (default: 123456)',
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (response.getSelectedButton() == ui.Button.OK) {
+    const newPin = response.getResponseText().trim();
+    
+    // Validasi PIN harus 6 digit angka
+    if (!/^\d{6}$/.test(newPin)) {
+      ui.alert('❌ Error', 'PIN harus terdiri dari 6 digit angka!', ui.ButtonSet.OK);
+      return { success: false, message: 'PIN tidak valid' };
+    }
+    
+    PropertiesService.getScriptProperties().setProperty(PIN_PROPERTY_KEY, newPin);
+    ui.alert('✅ Berhasil', 'PIN berhasil diubah menjadi: ' + newPin, ui.ButtonSet.OK);
+    return { success: true, message: 'PIN berhasil diubah' };
+  }
+  
+  return { success: false, message: 'Dibatalkan' };
+}
+
+/**
+ * Verifikasi PIN dari client-side
+ * @param {string} enteredPin - PIN yang dimasukkan user
+ * @returns {Object} Status verifikasi
+ */
+function verifyPin(enteredPin) {
+  const storedPin = getStoredPin();
+  const isValid = enteredPin === storedPin;
+  
+  return {
+    success: isValid,
+    message: isValid ? 'PIN benar' : 'PIN salah'
+  };
 }
 
 /**

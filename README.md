@@ -4,9 +4,19 @@ Aplikasi CRUD modern untuk manajemen penyewaan VPS dengan tampilan mobile-friend
 
 ## ✨ Fitur Utama
 
-### 🔐 Keamanan
+### 🔐 Keamanan PIN
 - **PIN 6 Digit** untuk aksi sensitif (Tambah, Broadcast, Cek Kadaluarsa)
-- PIN default: `123456` (dapat diubah di Index.hml)
+- **PIN tersimpan di PropertiesService** Google Apps Script
+- **Setup/Update PIN** melalui menu di Apps Script Editor
+- PIN default: `123456`
+- Verifikasi PIN dilakukan di server (aman)
+- Fallback ke verifikasi lokal jika server error
+
+### 🛠️ Setup PIN Baru
+1. Buka Apps Script Editor
+2. Jalankan fungsi `setupPin()`
+3. Masukkan PIN 6 digit baru
+4. PIN tersimpan aman di PropertiesService
 
 ### 🔍 Pencarian & Filter
 - Pencarian real-time berdasarkan **Username** atau **IP VPS**
@@ -89,9 +99,16 @@ ManageSC/
 ## 🔧 Konfigurasi
 
 ### Mengubah PIN
-Edit di `Index.hml`:
+**Cara 1: Melalui Apps Script Editor (Recommended)**
+1. Buka Apps Script editor
+2. Jalankan fungsi `setupPin()`
+3. Masukkan PIN 6 digit baru
+4. PIN tersimpan di PropertiesService
+
+**Cara 2: Hardcode (Tidak Direkomendasikan)**
+Edit di `Code.gs`:
 ```javascript
-const CORRECT_PIN = '123456'; // Ganti dengan PIN baru
+const DEFAULT_PIN = '123456'; // Ganti dengan PIN baru
 ```
 
 ### Mengubah Pagination Limit
@@ -125,6 +142,9 @@ Edit di `Index.hml` (CSS Variables):
 
 | Fungsi | Deskripsi |
 |--------|-----------|
+| `getStoredPin()` | Mendapatkan PIN dari PropertiesService |
+| `setupPin()` | Setup/update PIN melalui UI |
+| `verifyPin()` | Verifikasi PIN dari client |
 | `getDataImproved()` | Ambil data dengan pagination & filter |
 | `addData()` | Tambah data baru |
 | `updateData()` | Update data existing |
@@ -141,12 +161,18 @@ Edit di `Index.hml` (CSS Variables):
 - Cek nama kolom sesuai
 - Refresh browser
 
-### PIN tidak berfungsi
-- Cek console browser untuk error
-- Pastikan CAPS LOCK off
+### PIN Modal Muncul Saat Membuka Aplikasi
+- **FIXED**: PIN modal sekarang hanya muncul saat aksi sensitif
+- Data dimuat setelah PIN dari server siap
+- Auto-close modal jika klik di luar area
+
+### PIN Tidak Berfungsi
+- Jalankan `setupPin()` untuk reset PIN
+- Pastikan koneksi internet stabil
+- Clear browser cache
 - Default PIN: `123456`
 
-### GitHub sync error
+### GitHub Sync Error
 - Pastikan token valid
 - Cek repo permissions
 - Verifikasi file path
@@ -160,5 +186,12 @@ Free to use and modify.
 Developed for VPS rental management.
 
 ---
-**Version:** 2.0  
-**Last Updated:** 2026
+**Version:** 3.0 - PIN Security Update  
+**Last Updated:** 2026  
+**Changelog:**
+- ✅ PIN tersimpan di PropertiesService GAS
+- ✅ Setup PIN melalui fungsi `setupPin()`
+- ✅ Verifikasi PIN di server (aman)
+- ✅ Fixed: PIN modal tidak muncul saat buka aplikasi
+- ✅ Auto-close PIN modal jika klik di luar
+- ✅ Fallback verifikasi lokal jika server error
