@@ -5,12 +5,13 @@ Aplikasi CRUD modern untuk manajemen penyewaan VPS dengan tampilan mobile-friend
 ## ✨ Fitur Utama
 
 ### 🔐 Keamanan PIN
-- **PIN 6 Digit** untuk aksi sensitif (Tambah, Broadcast, Cek Kadaluarsa)
+- **PIN 6 Digit** hanya sekali saat masuk aplikasi
 - **PIN tersimpan di PropertiesService** Google Apps Script
 - **Setup/Update PIN** melalui menu di Apps Script Editor
 - PIN default: `123456`
 - Verifikasi PIN dilakukan di server (aman)
-- Fallback ke verifikasi lokal jika server error
+- **Tidak perlu PIN berulang kali** - cukup sekali per sesi
+- **Desktop & Mobile** - Navigation tersedia di semua device
 
 ### 🛠️ Setup PIN Baru
 1. Buka Apps Script Editor
@@ -128,15 +129,23 @@ Edit di `Index.hml` (CSS Variables):
 }
 ```
 
-## 📱 Bottom Navigation (Mobile)
+## 📱 Navigation
 
-| Icon | Menu | Fungsi |
-|------|------|--------|
-| 🏠 | Home | Scroll ke atas |
-| ➕ | Tambah | Tambah data baru (butuh PIN) |
-| 🔍 | Cari | Fokus ke search bar |
-| 📢 | Broadcast | Kirim broadcast (butuh PIN) |
-| 📧 | Cek | Cek kadaluarsa (butuh PIN) |
+### Desktop (Top Navigation)
+- 🏠 **Home** - Scroll ke atas
+- ➕ **Tambah** - Tambah data baru
+- 🔍 **Cari** - Fokus ke search bar
+- 📢 **Broadcast** - Kirim broadcast
+- 📧 **Cek** - Cek kadaluarsa
+
+### Mobile (Bottom Navigation)
+- 🏠 **Home** - Scroll ke atas
+- ➕ **Tambah** - Tambah data baru
+- 🔍 **Cari** - Fokus ke search bar
+- 📢 **Broadcast** - Kirim broadcast
+- 📧 **Cek** - Cek kadaluarsa
+
+**Note:** PIN hanya diminta **sekali saat pertama kali membuka aplikasi**. Setelah itu bisa akses semua fitur tanpa PIN lagi (dalam sesi yang sama).
 
 ## 🎯 Fungsi Backend
 
@@ -161,16 +170,20 @@ Edit di `Index.hml` (CSS Variables):
 - Cek nama kolom sesuai
 - Refresh browser
 
-### PIN Modal Muncul Saat Membuka Aplikasi
-- **FIXED**: PIN modal sekarang hanya muncul saat aksi sensitif
-- Data dimuat setelah PIN dari server siap
-- Auto-close modal jika klik di luar area
+### PIN Modal Tidak Muncul Saat Buka Aplikasi
+- Refresh halaman (Ctrl+F5 / Cmd+Shift+R)
+- Clear browser cache
+- Cek console browser untuk error
 
 ### PIN Tidak Berfungsi
 - Jalankan `setupPin()` untuk reset PIN
 - Pastikan koneksi internet stabil
 - Clear browser cache
 - Default PIN: `123456`
+
+### Tidak Bisa Close PIN Modal
+- PIN modal tidak bisa di-close saat pertama kali buka aplikasi (wajib input PIN)
+- Setelah masuk, modal bisa di-close dengan klik tombol Batal atau klik di luar modal
 
 ### GitHub Sync Error
 - Pastikan token valid
@@ -186,12 +199,11 @@ Free to use and modify.
 Developed for VPS rental management.
 
 ---
-**Version:** 3.0 - PIN Security Update  
+**Version:** 4.0 - PIN Once & Desktop Navigation  
 **Last Updated:** 2026  
 **Changelog:**
-- ✅ PIN tersimpan di PropertiesService GAS
-- ✅ Setup PIN melalui fungsi `setupPin()`
-- ✅ Verifikasi PIN di server (aman)
-- ✅ Fixed: PIN modal tidak muncul saat buka aplikasi
-- ✅ Auto-close PIN modal jika klik di luar
-- ✅ Fallback verifikasi lokal jika server error
+- ✅ PIN hanya sekali saat masuk aplikasi (session-based)
+- ✅ Navigation tersedia untuk Desktop (Top) & Mobile (Bottom)
+- ✅ PIN modal tidak bisa di-close saat app entry
+- ✅ Auto-load data setelah PIN benar
+- ✅ UX lebih baik - tidak perlu PIN berulang kali

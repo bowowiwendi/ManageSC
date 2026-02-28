@@ -372,6 +372,47 @@
     .bottom-nav-item.active { color: var(--primary-color); background: rgba(79, 70, 229, 0.1); }
     .bottom-nav-item .nav-icon { font-size: 1.5rem; line-height: 1; }
 
+    /* Top Navigation for Desktop */
+    .top-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .top-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 20px;
+      background: white;
+      border: 2px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      min-width: 100px;
+    }
+
+    .top-nav-item:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: var(--box-shadow);
+    }
+
+    .top-nav-item.active {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .top-nav-item .nav-icon { font-size: 1.5rem; line-height: 1; }
+
     .pin-modal {
       display: none;
       position: fixed;
@@ -445,6 +486,7 @@
       header h1 { font-size: 1.4rem; }
       header p { font-size: 0.85rem; }
       .button-group { display: none; }
+      .top-nav { display: none; }
       .search-container { padding: 1rem; }
       .search-input-wrapper { flex-direction: column; gap: 0.5rem; }
       .search-input { width: 100%; }
@@ -482,6 +524,25 @@
       <h1>🖥️ Manajemen Penyewaan VPS</h1>
       <p>Aplikasi CRUD untuk program penyewaan VPS Limit & Unlimited</p>
     </header>
+
+    <!-- Top Navigation (Desktop) -->
+    <nav class="top-nav">
+      <button class="top-nav-item active" data-action="home">
+        <span class="nav-icon">🏠</span><span>Home</span>
+      </button>
+      <button class="top-nav-item" data-action="add">
+        <span class="nav-icon">➕</span><span>Tambah</span>
+      </button>
+      <button class="top-nav-item" data-action="search">
+        <span class="nav-icon">🔍</span><span>Cari</span>
+      </button>
+      <button class="top-nav-item" data-action="broadcast">
+        <span class="nav-icon">📢</span><span>Broadcast</span>
+      </button>
+      <button class="top-nav-item" data-action="check">
+        <span class="nav-icon">📧</span><span>Cek</span>
+      </button>
+    </nav>
 
     <main>
       <div class="button-group">
@@ -698,6 +759,8 @@
     let itemToDeleteId = null;
     let itemToRenewId = null;
     let pendingAction = null;
+    let pinVerified = false; // Track jika user sudah verify PIN (session-based)
+    let appInitialized = false; // Track jika aplikasi sudah diinisialisasi
 
     // ============================================
     // DOM ELEMENTS
@@ -746,7 +809,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       initElements();
       initPINHandler();
-      initBottomNav();
+      initNavigation(); // Combined navigation for desktop & mobile
       initSearch();
       initEventListeners();
       loadPinAndFetchData();
@@ -760,12 +823,13 @@
         .withSuccessHandler((pin) => {
           storedPin = pin;
           console.log('✅ PIN loaded from server');
-          fetchData();
+          // Show PIN modal immediately on app load
+          showPINModal('app-entry');
         })
         .withFailureHandler((error) => {
           console.error('❌ Error loading PIN:', error);
           storedPin = '123456'; // Fallback
-          fetchData();
+          showPINModal('app-entry');
         })
         .getStoredPin();
     }
@@ -843,28 +907,53 @@
     }
 
     // ============================================
-    // BOTTOM NAVIGATION
+    // NAVIGATION (Desktop & Mobile)
     // ============================================
-    function initBottomNav() {
+    function initNavigation() {
+      // Desktop navigation
+      const topNavItems = document.querySelectorAll('.top-nav-item');
+      topNavItems.forEach(item => {
+        item.addEventListener('click', () => handleNavigationAction(item));
+      });
+
+      // Mobile navigation
       elements.bottomNavItems.forEach(item => {
-        item.addEventListener('click', () => {
-          const action = item.getAttribute('data-action');
-          elements.bottomNavItems.forEach(nav => nav.classList.remove('active'));
-          item.classList.add('active');
-          
-          switch(action) {
-            case 'home': window.scrollTo({ top: 0, behavior: 'smooth' }); break;
-            case 'add': requirePIN(() => showModal('add')); break;
-            case 'search': elements.searchInput.focus(); elements.searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); break;
-            case 'broadcast': requirePIN(() => showBroadcastModal()); break;
-            case 'check': requirePIN(() => handleCheckExpired()); break;
-          }
-        });
+        item.addEventListener('click', () => handleNavigationAction(item));
       });
     }
 
+    function handleNavigationAction(item) {
+      const action = item.getAttribute('data-action');
+      
+      // Update active state for both navs
+      document.querySelectorAll('.top-nav-item, .bottom-nav-item').forEach(nav => {
+        nav.classList.remove('active');
+      });
+      item.classList.add('active');
+      
+      // Handle actions
+      switch(action) {
+        case 'home':
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          break;
+        case 'add':
+          showModal('add');
+          break;
+        case 'search':
+          elements.searchInput.focus();
+          elements.searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          break;
+        case 'broadcast':
+          showBroadcastModal();
+          break;
+        case 'check':
+          handleCheckExpired();
+          break;
+      }
+    }
+
     // ============================================
-    // PIN HANDLER - FIXED
+    // PIN HANDLER - ONCE AT APP ENTRY
     // ============================================
     function initPINHandler() {
       elements.pinDigits.forEach((digit, index) => {
@@ -894,13 +983,18 @@
       
       elements.verifyPinBtn.addEventListener('click', verifyPIN);
       elements.cancelPinBtn.addEventListener('click', () => {
+        // Don't allow cancel on app entry
+        if (!appInitialized) {
+          showNotification('⚠️ PIN diperlukan untuk masuk aplikasi!', 'error');
+          return;
+        }
         hidePINModal();
         pendingAction = null;
       });
       
-      // Close modal when clicking outside
+      // Close modal when clicking outside (only after app initialized)
       elements.pinModal.addEventListener('click', (e) => {
-        if (e.target === elements.pinModal) {
+        if (e.target === elements.pinModal && appInitialized) {
           hidePINModal();
           pendingAction = null;
         }
@@ -926,8 +1020,12 @@
       google.script.run
         .withSuccessHandler((response) => {
           if (response.success) {
+            pinVerified = true;
+            appInitialized = true;
             hidePINModal();
-            showNotification('✅ PIN benar!', 'success');
+            showNotification('✅ PIN benar! Selamat datang.', 'success');
+            fetchData(); // Load data setelah PIN benar
+            
             if (pendingAction) {
               pendingAction();
               pendingAction = null;
@@ -940,8 +1038,12 @@
           console.error('PIN verification error:', error);
           // Fallback: verify locally if server fails
           if (enteredPIN === storedPin) {
+            pinVerified = true;
+            appInitialized = true;
             hidePINModal();
-            showNotification('✅ PIN benar!', 'success');
+            showNotification('✅ PIN benar! Selamat datang.', 'success');
+            fetchData();
+            
             if (pendingAction) {
               pendingAction();
               pendingAction = null;
@@ -966,10 +1068,21 @@
       showNotification('❌ PIN salah! Silakan coba lagi.', 'error');
     }
 
-    function showPINModal() {
+    function showPINModal(mode = 'action') {
       clearPIN();
       elements.pinModal.style.display = 'block';
       setTimeout(() => elements.pinDigits[0].focus(), 100);
+      
+      // Disable cancel button on app entry
+      if (mode === 'app-entry') {
+        elements.cancelPinBtn.disabled = true;
+        elements.cancelPinBtn.style.opacity = '0.5';
+        elements.cancelPinBtn.style.cursor = 'not-allowed';
+      } else {
+        elements.cancelPinBtn.disabled = false;
+        elements.cancelPinBtn.style.opacity = '1';
+        elements.cancelPinBtn.style.cursor = 'pointer';
+      }
     }
 
     function hidePINModal() {
@@ -982,11 +1095,6 @@
         d.value = '';
         d.classList.remove('filled', 'pin-error');
       });
-    }
-
-    function requirePIN(action) {
-      pendingAction = action;
-      showPINModal();
     }
 
     // ============================================
