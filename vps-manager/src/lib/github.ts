@@ -1,4 +1,5 @@
 import { store } from './store'
+import type { VpsData } from './types'
 
 export interface GithubConfig {
   username: string
@@ -37,6 +38,62 @@ export async function generateVpsListContent(): Promise<string> {
     }
   }
   return content
+}
+
+export async function importFromGithub(): Promise<{ success: boolean; message: string; imported?: number }> {
+  const config = await getGithubConfig()
+  if (!config.token || !config.username || !config.repo || !config.filePath) {
+    return { success: false, message: 'GitHub belum dikonfigurasi. Buka Pengaturan > GitHub untuk setup.' }
+  }
+
+  try {
+    const url = `https://api.github.com/repos/${config.username}/${config.repo}/contents/${config.filePath}`
+    const res = await fetch(url, {
+      headers: {
+        'Authorization': `token ${config.token}`,
+        'User-Agent': 'VPS-Manager-App',
+      },
+    })
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        return { success: false, message: 'File tidak ditemukan di GitHub. Sync data dulu dari dashboard.' }
+      }
+      const errData = await res.json().catch(() => ({}))
+      return { success: false, message: `Gagal mengambil data: ${errData.message || res.statusText}` }
+    }
+
+    const data = await res.json()
+    const raw = Buffer.from(data.content, 'base64').toString('utf-8')
+    const lines = raw.split('\n').filter(line => line.trim().startsWith('### '))
+
+    const imported: VpsData[] = []
+    for (const line of lines) {
+      const parts = line.replace('### ', '').trim().split(/\s+/)
+      if (parts.length >= 3) {
+        const username = parts[0]
+        const expiry = parts[1]
+        const ip = parts.slice(2).join(' ')
+
+        imported.push({
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+          username,
+          tipeAkun: expiry === 'lifetime' ? 'unli' : 'limit',
+          masaAktif: expiry,
+          ipVps: `'${ip}`,
+          emailMember: '',
+          ram: '',
+          pesan: '',
+        })
+      }
+    }
+
+    await store.replaceAll(imported)
+
+    return { success: true, message: `Berhasil import ${imported.length} data dari GitHub!`, imported: imported.length }
+  } catch (err) {
+    return { success: false, message: `Error: ${err instanceof Error ? err.message : 'Unknown error'}` }
+  }
 }
 
 export async function syncToGithub(): Promise<{ success: boolean; message: string }> {

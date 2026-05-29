@@ -146,9 +146,9 @@ export const store = {
       const start = startDate ? new Date(startDate + 'T00:00:00') : null
       const end = endDate ? new Date(endDate + 'T23:59:59') : null
       data = data.filter(item => {
-        if (!item.masaAktif || item.masaAktif === 'lifetime') return false
+        if (!item.masaAktif || item.masaAktif === 'lifetime') return true
         const d = new Date(item.masaAktif)
-        if (isNaN(d.getTime())) return false
+        if (isNaN(d.getTime())) return true
         if (start && d < start) return false
         if (end && d > end) return false
         return true
@@ -235,6 +235,11 @@ export const store = {
   async verifyPin(enteredPin: string): Promise<boolean> {
     const stored = await getPin()
     return enteredPin === stored
+  },
+
+  // Replace all data (for GitHub import)
+  async replaceAll(data: VpsData[]) {
+    await writeAllData(data)
   },
 
   // GitHub config

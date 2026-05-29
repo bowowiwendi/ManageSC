@@ -156,6 +156,25 @@ export default function Home() {
     }
   }
 
+  const triggerGithubImport = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/github', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'import' }),
+      })
+      const json = await res.json()
+      setGithubStatus({ message: json.message, type: json.success ? 'success' : 'error' })
+      setTimeout(() => setGithubStatus(null), 4000)
+      if (json.success) fetchData()
+    } catch {
+      setGithubStatus({ message: 'Gagal import data', type: 'error' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const goToPage = (p: number) => {
     if (p < 1 || p > pagination.totalPages) return
     setPage(p)
@@ -783,6 +802,9 @@ export default function Home() {
                 <button onClick={saveGithubConfig} className="btn btn-success flex-1"><SaveIcon size={16} /> Simpan</button>
                 <button onClick={triggerGithubSync} className="btn btn-sky flex-1" disabled={loading}>
                   {loading ? <SpinnerIcon size={16} /> : <><RefreshIcon size={16} /> Sync Manual</>}
+                </button>
+                <button onClick={triggerGithubImport} className="btn btn-secondary flex-1" disabled={loading}>
+                  {loading ? <SpinnerIcon size={16} /> : <><RefreshIcon size={16} /> Import Data</>}
                 </button>
               </div>
               <button onClick={() => setModal(null)} className="btn btn-secondary w-full">Tutup</button>

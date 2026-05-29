@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getGithubConfig, saveGithubConfig, syncToGithub } from '@/lib/github'
+import { getGithubConfig, importFromGithub, saveGithubConfig, syncToGithub } from '@/lib/github'
 
 export async function GET() {
   const config = await getGithubConfig()
@@ -27,6 +27,11 @@ export async function POST(req: NextRequest) {
 
   if (action === 'sync') {
     const result = await syncToGithub()
+    return NextResponse.json(result)
+  }
+
+  if (action === 'import') {
+    const result = await importFromGithub()
     return NextResponse.json(result)
   }
 
