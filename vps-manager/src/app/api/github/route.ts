@@ -13,11 +13,12 @@ export async function POST(req: NextRequest) {
   const { action } = body
 
   if (action === 'save') {
-    const { username, repo, filePath, token, enabled } = body
+    const { username, repo, branch, filePath, token, enabled } = body
     const current = await getGithubConfig()
     await saveGithubConfig({
       username: username || current.username,
       repo: repo || current.repo,
+      branch: branch || current.branch,
       filePath: filePath || current.filePath,
       token: token || current.token,
       enabled: enabled ?? current.enabled,

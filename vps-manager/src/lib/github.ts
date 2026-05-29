@@ -4,6 +4,7 @@ import type { VpsData } from './types'
 export interface GithubConfig {
   username: string
   repo: string
+  branch: string
   filePath: string
   token: string
   enabled: boolean
@@ -15,12 +16,13 @@ export async function getGithubConfig(): Promise<GithubConfig> {
     return {
       username: raw.username || '',
       repo: raw.repo || '',
+      branch: raw.branch || 'main',
       filePath: raw.filePath || '',
       token: raw.token || '',
       enabled: raw.enabled || false,
     }
   }
-  return { username: '', repo: '', filePath: '', token: '', enabled: false }
+  return { username: '', repo: '', branch: 'main', filePath: '', token: '', enabled: false }
 }
 
 export async function saveGithubConfig(config: GithubConfig): Promise<void> {
@@ -42,29 +44,22 @@ export async function generateVpsListContent(): Promise<string> {
 
 export async function importFromGithub(): Promise<{ success: boolean; message: string; imported?: number }> {
   const config = await getGithubConfig()
-  if (!config.token || !config.username || !config.repo || !config.filePath) {
+  if (!config.username || !config.repo || !config.filePath) {
     return { success: false, message: 'GitHub belum dikonfigurasi. Buka Pengaturan > GitHub untuk setup.' }
   }
 
   try {
-    const url = `https://api.github.com/repos/${config.username}/${config.repo}/contents/${config.filePath}`
-    const res = await fetch(url, {
-      headers: {
-        'Authorization': `token ${config.token}`,
-        'User-Agent': 'VPS-Manager-App',
-      },
-    })
+    const url = `https://raw.githubusercontent.com/${config.username}/${config.repo}/refs/heads/${config.branch}/${config.filePath}`
+    const res = await fetch(url)
 
     if (!res.ok) {
       if (res.status === 404) {
         return { success: false, message: 'File tidak ditemukan di GitHub. Sync data dulu dari dashboard.' }
       }
-      const errData = await res.json().catch(() => ({}))
-      return { success: false, message: `Gagal mengambil data: ${errData.message || res.statusText}` }
+      return { success: false, message: `Gagal mengambil data: ${res.statusText}` }
     }
 
-    const data = await res.json()
-    const raw = Buffer.from(data.content, 'base64').toString('utf-8')
+    const raw = await res.text()
     const lines = raw.split('\n').filter(line => line.trim().startsWith('### '))
 
     const imported: VpsData[] = []

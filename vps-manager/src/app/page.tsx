@@ -30,6 +30,7 @@ type ModalType = 'add' | 'edit' | 'delete' | 'renew' | 'github' | null
 type GithubConfig = {
   username: string
   repo: string
+  branch: string
   filePath: string
   enabled: boolean
 }
@@ -64,7 +65,7 @@ export default function Home() {
   const [renewDays, setRenewDays] = useState('')
 
   // GitHub
-  const [githubConfig, setGithubConfig] = useState<GithubConfig>({ username: '', repo: '', filePath: '', enabled: false })
+  const [githubConfig, setGithubConfig] = useState<GithubConfig>({ username: '', repo: '', branch: 'main', filePath: '', enabled: false })
   const [githubHasToken, setGithubHasToken] = useState(false)
   const [githubToken, setGithubToken] = useState('')
   const [githubStatus, setGithubStatus] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
@@ -786,6 +787,11 @@ export default function Home() {
                   className="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100 bg-white" placeholder="Contoh: main/ip" />
               </div>
               <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Branch</label>
+                <input value={githubConfig.branch} onChange={e => setGithubConfig(p => ({ ...p, branch: e.target.value }))}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100 bg-white" placeholder="Contoh: main" />
+              </div>
+              <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1">Personal Access Token {githubHasToken && <span className="text-emerald-500 text-xs font-normal">(tersimpan)</span>}</label>
                 <input type="password" value={githubToken} onChange={e => setGithubToken(e.target.value)} placeholder={githubHasToken ? 'Kosongkan jika tidak ingin mengubah' : 'Masukkan token...'}
                   className="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100 bg-white" />
@@ -800,11 +806,11 @@ export default function Home() {
               <p className="text-xs text-slate-400">Jika aktif, setiap perubahan data akan otomatis sync ke GitHub.</p>
               <div className="flex gap-3 pt-2">
                 <button onClick={saveGithubConfig} className="btn btn-success flex-1"><SaveIcon size={16} /> Simpan</button>
-                <button onClick={triggerGithubSync} className="btn btn-sky flex-1" disabled={loading}>
-                  {loading ? <SpinnerIcon size={16} /> : <><RefreshIcon size={16} /> Sync Manual</>}
+                <button onClick={triggerGithubImport} className="btn btn-success flex-1" disabled={loading}>
+                  {loading ? <SpinnerIcon size={16} /> : <><RefreshIcon size={16} /> Sync dari GitHub</>}
                 </button>
-                <button onClick={triggerGithubImport} className="btn btn-secondary flex-1" disabled={loading}>
-                  {loading ? <SpinnerIcon size={16} /> : <><RefreshIcon size={16} /> Import Data</>}
+                <button onClick={triggerGithubSync} className="btn btn-sky flex-1" disabled={loading}>
+                  {loading ? <SpinnerIcon size={16} /> : <><RefreshIcon size={16} /> Sync ke GitHub</>}
                 </button>
               </div>
               <button onClick={() => setModal(null)} className="btn btn-secondary w-full">Tutup</button>
