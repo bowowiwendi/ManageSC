@@ -88,6 +88,10 @@ export async function importFromGithub(): Promise<{ success: boolean; message: s
       }
     }
 
+    if (imported.length === 0) {
+      return { success: false, message: 'Tidak ada data valid di file GitHub. Import dibatalkan agar data lokal tidak terhapus.' }
+    }
+
     await store.replaceAll(imported)
 
     return { success: true, message: `Berhasil import ${imported.length} data dari GitHub!`, imported: imported.length }
